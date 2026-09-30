@@ -3,8 +3,8 @@ import { withTransaction } from "@kira-joo/backend-toolkit-mongoose";
 import { readMoney, readOptionalMoney } from "src/server/core/money";
 import mongoose from "mongoose";
 import { Locale, OrderStatus, PaymentMethod, TimelineActor } from "src/common/enums";
+import { DELIVERY_CITY, SAFE_USE_TEXT } from "src/content/store-config";
 import { ProductModel } from "src/server/catalog/product.schema";
-import { getSettingsDocument } from "src/server/content/settings.service";
 import { randomToken, sha256 } from "src/server/core/crypto";
 import { decideCustomerMatch } from "src/server/engines/customer-match";
 import { normalizeEmail, normalizeSaudiMobile } from "src/server/engines/normalize";
@@ -57,7 +57,6 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlacedOrder> {
     const cart = await CartModel.findOne({ tokenHash: input.cartTokenHash }).session(session).lean<CartSchema>();
     if (!cart || cart.lines.length === 0) throw new ConflictError("Your cart is empty.", { reason: "EMPTY_CART" });
 
-    const settings = await getSettingsDocument();
     const priced = await priceCart(cart, now);
 
     const issues = priced.lines.filter((line) => line.issue !== null);
@@ -105,7 +104,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlacedOrder> {
     }
 
     const address: AddressSnapshot = {
-      city: settings.delivery?.city ?? { ar: "الرياض", en: "Riyadh" },
+      city: DELIVERY_CITY,
       district: input.address.district.trim(),
       street: input.address.street.trim(),
       building: input.address.building?.trim() ?? "",
@@ -198,7 +197,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlacedOrder> {
             : null,
           gift: cart.gift ?? null,
           safeUse: {
-            text: settings.safeUseText ?? { ar: "", en: "" },
+            text: SAFE_USE_TEXT,
             acceptedAt: now,
           },
           paymentMethod: PaymentMethod.CASH_ON_DELIVERY,

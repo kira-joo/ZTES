@@ -8,7 +8,7 @@ export const categoryCrud = {
   repository: categoryRepository,
   dto: CategoryDto,
   listQuery: ListCategoriesQueryDto,
-  tags: [CacheTag.CATEGORIES, CacheTag.PRODUCTS, CacheTag.HOME],
+  tags: [CacheTag.CATEGORIES, CacheTag.PRODUCTS],
   assetFields: CATEGORY_ASSET_FIELDS,
   assetFolder: "ztes/categories",
   toEntity: async (dto: CategoryDto, { id }: { id?: string }) => {
@@ -22,7 +22,7 @@ export const brandCrud = {
   repository: brandRepository,
   dto: BrandDto,
   listQuery: ListBrandsQueryDto,
-  tags: [CacheTag.BRANDS, CacheTag.PRODUCTS, CacheTag.HOME],
+  tags: [CacheTag.BRANDS, CacheTag.PRODUCTS],
   assetFields: BRAND_ASSET_FIELDS,
   assetFolder: "ztes/brands",
   toEntity: (dto: BrandDto) => brandPayload(dto),

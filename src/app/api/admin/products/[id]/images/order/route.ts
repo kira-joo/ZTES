@@ -22,5 +22,5 @@ export const PUT = createPutRoute({
     await ProductModel.updateOne({ _id: params.id }, { $set: { images: body.publicIds.map((id) => byId.get(id)) } });
     return { images: body.publicIds.map((id) => byId.get(id)) };
   },
-  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id), CacheTag.HOME],
+  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id)],
 });

@@ -36,7 +36,7 @@ export const POST = createPostRoute({
     }
     return asset;
   },
-  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id), CacheTag.HOME],
+  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id)],
 });
 
 /** Removes one image: `?publicId=…` (public ids contain slashes, so not a path segment). */
@@ -50,5 +50,5 @@ export const DELETE = createDeleteRoute({
     if (result.modifiedCount === 1) await requireAssetProvider().destroyAsset(publicId, "image").catch(() => undefined);
     return { removed: result.modifiedCount === 1 };
   },
-  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id), CacheTag.HOME],
+  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id)],
 });

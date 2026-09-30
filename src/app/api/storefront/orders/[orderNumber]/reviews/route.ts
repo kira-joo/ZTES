@@ -1,7 +1,9 @@
 import { BadRequestError, ConflictError } from "@kira-joo/backend-toolkit-core";
+import { withTransaction } from "@kira-joo/backend-toolkit-mongoose";
 import mongoose from "mongoose";
 import { OrderStatus } from "src/common/enums";
 import { ReviewModel } from "src/server/catalog/review.schema";
+import { recomputeProductRating } from "src/server/catalog/catalog.service";
 import { SubmitReviewDto } from "src/server/commerce/dto/commerce.dto";
 import { findAccessibleOrder } from "src/server/commerce/order-access";
 import { OrderNumberParamsDto } from "src/server/core/dto/params.dto";
@@ -12,8 +14,9 @@ export const dynamic = "force-dynamic";
 
 /**
  * A buyer reviews a product from a delivered order — the no-accounts stand-in
- * for "verified purchase". Held for moderation (unpublished) until the admin
- * publishes it, which is also when it starts counting toward the rating.
+ * for "verified purchase". Publishes immediately: there is no admin
+ * review-management screen to moderate it (see docs/implementation-plan.md's
+ * "Scope correction"), so the rating updates in the same transaction.
  */
 export const POST = createPostRoute({
   auth: false,
@@ -27,14 +30,24 @@ export const POST = createPostRoute({
     if (!order.lines.some((line) => String(line.product) === body.productId)) {
       throw new BadRequestError("That product is not in this order.");
     }
+    const productId = new mongoose.Types.ObjectId(body.productId);
     try {
-      await ReviewModel.create({
-        product: new mongoose.Types.ObjectId(body.productId),
-        order: order._id,
-        authorName: body.authorName,
-        rating: body.rating,
-        body: body.body ?? "",
-        isPublished: false,
+      await withTransaction(async (tx) => {
+        await ReviewModel.create(
+          [
+            {
+              product: productId,
+              order: order._id,
+              authorName: body.authorName,
+              rating: body.rating,
+              body: body.body ?? "",
+              isPublished: true,
+            },
+          ],
+          { session: tx.session }
+        );
+        await recomputeProductRating(productId, tx.session);
+        return tx.complete(undefined);
       });
     } catch (error) {
       if ((error as { code?: number }).code === 11000) throw new ConflictError("You already reviewed this product.");

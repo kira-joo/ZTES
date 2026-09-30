@@ -1,10 +1,9 @@
 import { BadRequestError, NotFoundError } from "@kira-joo/backend-toolkit-core";
 import { resolveSession } from "@kira-joo/backend-toolkit-mongoose";
-import type { LocalizedString } from "@kira-joo/toolkit-common";
 import mongoose from "mongoose";
 import { readMoney, readOptionalMoney } from "src/server/core/money";
+import { DELIVERY_FEE, FREE_SHIPPING_THRESHOLD, VAT_RATE } from "src/content/store-config";
 import { CouponModel, type CouponSchema } from "src/server/commerce/coupon.schema";
-import { getSettingsDocument } from "src/server/content/settings.service";
 import { randomToken, sha256 } from "src/server/core/crypto";
 import { CouponRejection, evaluateCoupon } from "src/server/engines/coupon";
 import { calculatePricing, type PricingResult } from "src/server/engines/pricing";
@@ -41,7 +40,7 @@ export interface PricedCart {
 
 /** Prices a cart from the live catalog, settings and coupon. Shared with placement. */
 export async function priceCart(cart: LeanCart, now = new Date()): Promise<PricedCart> {
-  const [lines, settings] = await Promise.all([resolveLines(lineRequests(cart)), getSettingsDocument()]);
+  const lines = await resolveLines(lineRequests(cart));
   const purchasable = lines.filter((line) => line.issue === null);
 
   const base = {
@@ -51,9 +50,9 @@ export async function priceCart(cart: LeanCart, now = new Date()): Promise<Price
       quantity: line.quantity,
       tiers: line.tiers,
     })),
-    shippingFee: readMoney(settings.delivery?.fee),
-    freeShippingThreshold: readOptionalMoney(settings.delivery?.freeShippingThreshold),
-    vatRate: settings.vatRate ?? 15,
+    shippingFee: DELIVERY_FEE,
+    freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
+    vatRate: VAT_RATE,
   };
 
   let coupon: CouponSchema | null = null;
@@ -157,8 +156,7 @@ export async function currentCart(options: { create: boolean }): Promise<LeanCar
 }
 
 export async function buildCartView(cart: LeanCart | null): Promise<CartView> {
-  const settings = await getSettingsDocument();
-  const threshold = settings.delivery?.freeShippingThreshold ? readMoney(settings.delivery.freeShippingThreshold).toFixed(2) : null;
+  const threshold = FREE_SHIPPING_THRESHOLD.toFixed(2);
   const empty: LeanCart = cart ?? ({ lines: [], couponCode: null, gift: null } as unknown as LeanCart);
   return toCartView(await priceCart(empty), threshold);
 }

@@ -1,151 +1,89 @@
 import "server-only";
-import mongoose from "mongoose";
 import { HomeSectionType, ProductRailSource, ProductSort } from "src/common/enums";
 import type {
-  BrandView,
   CouponPublicView,
   FaqView,
+  HomeMediaItemView,
   HomeSectionView,
   PageView,
   PostCardView,
   PostView,
+  ProductCardView,
   SettingsView,
   TestimonialView,
 } from "src/common/types/storefront";
-import { CategoryModel } from "src/server/catalog/category.schema";
+import { FAQS } from "src/content/faqs";
+import { HOME_SECTIONS, type StaticHomeSection, type StaticMediaItem } from "src/content/home-sections";
+import { PAGES } from "src/content/pages";
+import { POSTS } from "src/content/posts";
+import { STORE_CONFIG } from "src/content/store-config";
+import { TESTIMONIALS } from "src/content/testimonials";
+import { CategoryModel, type CategorySchema } from "src/server/catalog/category.schema";
+import { ProductModel, type ProductSchema } from "src/server/catalog/product.schema";
 import { CouponModel } from "src/server/commerce/coupon.schema";
-import { HomeSectionModel, type HomeSectionSchema } from "src/server/content/home-section.schema";
-import { PageModel, PostModel, type PageSchema, type PostSchema } from "src/server/content/page.schema";
-import { getSettingsDocument } from "src/server/content/settings.service";
-import { FaqModel, TestimonialModel } from "src/server/content/small-content.schema";
-import { readMoney, readOptionalMoney } from "src/server/core/money";
 import { CacheTag } from "src/server/core/revalidation/cache-tag";
+import { pickSlug } from "src/lib/localized";
 import { cachedRead } from "./cached-read";
-import { getBrands, getProductsByIds, listProducts } from "./catalog.reads";
-import { emptyLocalized } from "./mappers";
+import { getBrands, listProducts, toCards } from "./catalog.reads";
+import { CARD_FIELDS, emptyLocalized } from "./mappers";
 
 const E = emptyLocalized;
+const ACTIVE = { isActive: true, deletedAt: null };
 
-export const getSettings = cachedRead("settings", [CacheTag.SETTINGS], async (): Promise<SettingsView> => {
-  const s = await getSettingsDocument();
-  return {
-    storeName: s.storeName ?? E(),
-    tagline: s.tagline ?? E(),
-    logo: s.logo ?? null,
-    favicon: s.favicon ?? null,
-    contact: { ...{ phone: "", whatsapp: "", email: "", address: E() }, ...s.contact },
-    social: { ...{ instagram: "", x: "", tiktok: "", facebook: "", youtube: "", snapchat: "" }, ...s.social },
-    legal: { vatNumber: s.legal?.vatNumber ?? "", crNumber: s.legal?.crNumber ?? "", vatCertificate: s.legal?.vatCertificate ?? null },
-    appLinks: { ...{ appStore: "", googlePlay: "" }, ...s.appLinks },
-    announcements: s.announcements ?? [],
-    footerDescription: s.footerDescription ?? E(),
-    delivery: {
-      city: s.delivery?.city ?? { ar: "الرياض", en: "Riyadh" },
-      fee: readMoney(s.delivery?.fee).toFixed(2),
-      freeShippingThreshold: readOptionalMoney(s.delivery?.freeShippingThreshold)?.toFixed(2) ?? null,
-      estimate: s.delivery?.estimate ?? E(),
-    },
-    vatRate: s.vatRate ?? 15,
-    safeUseTitle: s.safeUseTitle ?? E(),
-    safeUseText: s.safeUseText ?? E(),
-    branches: (s.branches ?? []).map((branch) => ({ ...branch, _id: String(branch._id) })),
-    popup: {
-      isActive: s.popup?.isActive ?? false,
-      title: s.popup?.title ?? E(),
-      body: s.popup?.body ?? E(),
-      image: s.popup?.image ?? null,
-      ctaLabel: s.popup?.ctaLabel ?? E(),
-      ctaHref: s.popup?.ctaHref ?? "",
-    },
-    seo: s.seo ?? { title: E(), description: E() },
-  };
-});
+// ─── Store config, FAQ, testimonials ───────────────────────────────────────
+// All static app content (src/content/*) — no database, no cache tag needed;
+// it only changes on deploy. See docs/implementation-plan.md's "Scope
+// correction".
 
-export const getSearchSuggestions = cachedRead("search-suggestions", [CacheTag.SETTINGS, CacheTag.CATEGORIES, CacheTag.PRODUCTS], async () => {
-  const s = await getSettingsDocument();
-  const categoryIds = (s.searchCategories ?? []).map(String);
-  const categories = await CategoryModel.find({ _id: { $in: categoryIds }, isActive: true }).select("name slug").lean();
-  const byId = new Map(categories.map((category) => [String(category._id), category]));
-  return {
-    categories: categoryIds
-      .map((id) => byId.get(id))
-      .filter(Boolean)
-      .map((category) => ({ _id: String(category!._id), name: category!.name, slug: category!.slug })),
-    products: await getProductsByIds((s.searchProducts ?? []).map(String)),
-  };
-});
-
-export const getFaqs = cachedRead("faqs", [CacheTag.FAQS], async (): Promise<FaqView[]> =>
-  (await FaqModel.find({ isActive: true }).sort({ sortOrder: 1, _id: 1 }).lean()).map((faq) => ({
-    _id: String(faq._id),
-    question: faq.question,
-    answer: faq.answer,
-  }))
-);
-
-export const getTestimonials = cachedRead("testimonials", [CacheTag.TESTIMONIALS], async (): Promise<TestimonialView[]> =>
-  (await TestimonialModel.find({ isActive: true }).sort({ sortOrder: 1, _id: 1 }).lean()).map((item) => ({
-    _id: String(item._id),
-    authorName: item.authorName,
-    body: item.body,
-    rating: item.rating,
-    avatar: item.avatar ?? null,
-  }))
-);
-
-function toPostCard(post: PostSchema): PostCardView {
-  return {
-    _id: String(post._id),
-    title: post.title,
-    slug: post.slug,
-    excerpt: post.excerpt ?? E(),
-    cover: post.cover ?? null,
-    publishedAt: post.publishedAt.toISOString(),
-  };
+export async function getSettings(): Promise<SettingsView> {
+  return STORE_CONFIG;
 }
 
-/** A post is listed in a locale only when it has a title and body in that locale. */
-function localeFilter(locale: "ar" | "en") {
-  return { [`title.${locale}`]: { $nin: ["", null] }, [`body.${locale}`]: { $nin: ["", null] } };
+export async function getFaqs(): Promise<FaqView[]> {
+  return FAQS;
 }
 
-export const getPosts = cachedRead(
-  "posts",
-  [CacheTag.POSTS],
-  async (locale: "ar" | "en", page: number = 1, limit: number = 12): Promise<{ items: PostCardView[]; total: number }> => {
-    const filter = { isPublished: true, ...localeFilter(locale) };
-    const [items, total] = await Promise.all([
-      PostModel.find(filter).sort({ publishedAt: -1 }).skip((page - 1) * limit).limit(limit).lean<PostSchema[]>(),
-      PostModel.countDocuments(filter),
-    ]);
-    return { items: items.map(toPostCard), total };
-  }
-);
+export async function getTestimonials(): Promise<TestimonialView[]> {
+  return TESTIMONIALS;
+}
 
-export const getPostBySlug = cachedRead("post-by-slug", [CacheTag.POSTS], async (locale: "ar" | "en", slug: string): Promise<PostView | null> => {
-  const post = await PostModel.findOne({ isPublished: true, [`slug.${locale}`]: slug, ...localeFilter(locale) }).lean<PostSchema>();
-  return post ? { ...toPostCard(post), body: post.body, seo: post.seo ?? { title: E(), description: E() } } : null;
-});
+export async function getPages(): Promise<PageView[]> {
+  return PAGES;
+}
 
-function toPageView(page: PageSchema): PageView {
+export async function getPageBySlug(locale: "ar" | "en", slug: string): Promise<PageView | null> {
+  return PAGES.find((page) => page.slug[locale] === slug) ?? null;
+}
+
+function stripPostBody(post: PostView): PostCardView {
+  return { _id: post._id, title: post.title, slug: post.slug, excerpt: post.excerpt, cover: post.cover, publishedAt: post.publishedAt };
+}
+
+export async function getPosts(locale: "ar" | "en", page: number = 1, limit: number = 12): Promise<{ items: PostCardView[]; total: number }> {
+  const eligible = POSTS.filter((post) => post.title[locale] && post.body[locale]).sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
+  const start = (page - 1) * limit;
+  return { items: eligible.slice(start, start + limit).map(stripPostBody), total: eligible.length };
+}
+
+export async function getPostBySlug(locale: "ar" | "en", slug: string): Promise<PostView | null> {
+  const post = POSTS.find((item) => item.slug[locale] === slug && item.title[locale] && item.body[locale]);
+  return post ?? null;
+}
+
+/** The search modal's zero-query state: top active categories and top-selling products, derived live. */
+export const getSearchSuggestions = cachedRead("search-suggestions", [CacheTag.CATEGORIES, CacheTag.PRODUCTS], async () => {
+  const categories = await CategoryModel.find({ isActive: true, showInMenu: true })
+    .sort({ sortOrder: 1, _id: 1 })
+    .limit(8)
+    .select("name slug")
+    .lean();
+  const products = (await listProducts({ sort: ProductSort.BEST_SELLING, limit: 8 })).items;
   return {
-    _id: String(page._id),
-    title: page.title,
-    slug: page.slug,
-    body: page.body,
-    showInFooter: page.showInFooter,
-    seo: page.seo ?? { title: E(), description: E() },
-    updatedAt: ((page as { updatedAt?: Date }).updatedAt ?? new Date()).toISOString(),
+    categories: categories.map((category) => ({ _id: String(category._id), name: category.name, slug: category.slug })),
+    products,
   };
-}
-
-export const getPages = cachedRead("pages", [CacheTag.PAGES], async (): Promise<PageView[]> =>
-  (await PageModel.find({ isActive: true }).sort({ sortOrder: 1, _id: 1 }).lean<PageSchema[]>()).map(toPageView)
-);
-
-export const getPageBySlug = cachedRead("page-by-slug", [CacheTag.PAGES], async (locale: "ar" | "en", slug: string): Promise<PageView | null> => {
-  const page = await PageModel.findOne({ isActive: true, [`slug.${locale}`]: slug }).lean<PageSchema>();
-  return page ? toPageView(page) : null;
 });
 
 export const getPublicCoupon = cachedRead("coupon-public", [CacheTag.COUPONS], async (code: string): Promise<CouponPublicView | null> => {
@@ -155,76 +93,143 @@ export const getPublicCoupon = cachedRead("coupon-public", [CacheTag.COUPONS], a
 });
 
 // ─── Home ───────────────────────────────────────────────────────────────────
+// Section layout is static (src/content/home-sections.ts); any item tied to a
+// real category/product/brand is resolved live here so it never goes stale.
 
-const blank = (section: HomeSectionSchema): HomeSectionView => ({
-  _id: String(section._id),
-  type: section.type,
-  title: section.title ?? E(),
-  items: (section.payload.items ?? []).map((item, index) => ({
-    _id: item._id ?? String(index),
-    image: item.image ?? null,
-    mobileImage: item.mobileImage ?? null,
-    title: item.title ?? E(),
+async function categoryByLegacyId(legacyId: string): Promise<Pick<CategorySchema, "_id" | "name" | "slug" | "image"> | null> {
+  return CategoryModel.findOne({ ...ACTIVE, "legacy.sallaId": legacyId })
+    .select("name slug image")
+    .lean<Pick<CategorySchema, "_id" | "name" | "slug" | "image">>();
+}
+
+/** First of `legacyIds` that resolves to a real, active category. */
+async function firstCategoryByLegacyIds(legacyIds: string[]): Promise<Pick<CategorySchema, "_id" | "name" | "slug"> | null> {
+  const found = await CategoryModel.find({ ...ACTIVE, "legacy.sallaId": { $in: legacyIds } })
+    .select("_id name slug legacy")
+    .lean<(Pick<CategorySchema, "_id" | "name" | "slug"> & { legacy?: { sallaId?: string } })[]>();
+  const byLegacyId = new Map(found.map((category) => [category.legacy?.sallaId, category]));
+  for (const id of legacyIds) {
+    const category = byLegacyId.get(id);
+    if (category) return category;
+  }
+  return null;
+}
+
+async function productCardByLegacyId(legacyId: string): Promise<ProductCardView | null> {
+  const product = await ProductModel.findOne({ ...ACTIVE, "legacy.sallaId": legacyId })
+    .select(CARD_FIELDS)
+    .lean<ProductSchema>();
+  return product ? (await toCards([product]))[0]! : null;
+}
+
+async function productCardsByLegacyIds(legacyIds: string[]): Promise<ProductCardView[]> {
+  if (legacyIds.length === 0) return [];
+  const products = await ProductModel.find({ ...ACTIVE, "legacy.sallaId": { $in: legacyIds } })
+    .select(`${CARD_FIELDS} legacy.sallaId`)
+    .lean<(ProductSchema & { legacy?: { sallaId?: string } })[]>();
+  const byLegacyId = new Map(products.map((product) => [product.legacy?.sallaId, product]));
+  const ordered = legacyIds.map((id) => byLegacyId.get(id)).filter((product): product is ProductSchema => Boolean(product));
+  return toCards(ordered);
+}
+
+async function resolveMediaItem(item: StaticMediaItem, locale: "ar" | "en"): Promise<HomeMediaItemView | null> {
+  if (item.kind === "category") {
+    const category = await categoryByLegacyId(item.legacyId);
+    if (!category) return null;
+    return {
+      _id: `cat-${item.legacyId}`,
+      image: category.image ?? null,
+      mobileImage: null,
+      title: item.title ?? category.name,
+      subtitle: item.subtitle ?? E(),
+      href: `/categories/${pickSlug(category.slug, locale)}`,
+    };
+  }
+  const product = await productCardByLegacyId(item.legacyId);
+  if (!product) return null;
+  return {
+    _id: `prod-${item.legacyId}`,
+    image: product.image,
+    mobileImage: null,
+    title: item.title ?? product.name,
     subtitle: item.subtitle ?? E(),
-    href: item.href ?? "",
-  })),
-  products: [],
-  category: null,
-  brands: [],
-  faqs: [],
-  testimonials: [],
-  posts: [],
-  videoUrl: section.payload.videoUrl ?? "",
-  couponCode: section.payload.couponCode ?? "",
-  endsAt: section.payload.endsAt ?? null,
-});
+    href: `/products/${pickSlug(product.slug, locale)}`,
+  };
+}
 
-/** Every active home section with the data it renders resolved. */
+async function resolveSection(
+  section: StaticHomeSection,
+  index: number,
+  locale: "ar" | "en",
+  faqs: FaqView[],
+  testimonials: TestimonialView[],
+  brands: Awaited<ReturnType<typeof getBrands>>
+): Promise<HomeSectionView> {
+  const base: HomeSectionView = {
+    _id: `home-${index}`,
+    type: section.type,
+    title: section.title ?? E(),
+    items: [],
+    products: [],
+    category: null,
+    brands: [],
+    faqs: [],
+    testimonials: [],
+    posts: [],
+    videoUrl: "",
+    couponCode: "",
+    endsAt: null,
+  };
+
+  switch (section.type) {
+    case HomeSectionType.HERO_SLIDER:
+    case HomeSectionType.TILE_ROW: {
+      const resolved = await Promise.all((section.items ?? []).map((item) => resolveMediaItem(item, locale)));
+      base.items = resolved.filter((item): item is HomeMediaItemView => item !== null);
+      return base;
+    }
+    case HomeSectionType.TRUST_STRIP:
+      base.items = (section.trustItems ?? []).map((item, i) => ({ _id: `trust-${i}`, image: null, mobileImage: null, title: item.title, subtitle: item.subtitle, href: "" }));
+      return base;
+    case HomeSectionType.PRODUCT_RAIL: {
+      const limit = section.limit ?? 12;
+      if (section.source === ProductRailSource.CATEGORY) {
+        const category = await firstCategoryByLegacyIds(section.categoryLegacyIds ?? []);
+        base.category = category ? { name: category.name, slug: category.slug } : null;
+        base.products = category ? (await listProducts({ category: String(category._id), sort: ProductSort.BEST_SELLING, limit })).items : [];
+      } else {
+        base.products = (await productCardsByLegacyIds(section.productLegacyIds ?? [])).slice(0, limit);
+      }
+      return base;
+    }
+    case HomeSectionType.SPOTLIGHT:
+      base.products = section.spotlightProductLegacyId ? await productCardByLegacyId(section.spotlightProductLegacyId).then((p) => (p ? [p] : [])) : [];
+      return base;
+    case HomeSectionType.BRAND_CAROUSEL:
+      base.brands = brands;
+      return base;
+    case HomeSectionType.FAQ:
+      base.faqs = faqs;
+      return base;
+    case HomeSectionType.TESTIMONIALS:
+      base.testimonials = testimonials;
+      return base;
+    case HomeSectionType.BLOG_RAIL:
+      base.posts = (await getPosts(locale, 1, section.postLimit ?? 8)).items;
+      return base;
+    default:
+      // SOCIAL_LINKS reads settings.social directly at render time; BANNER and
+      // BRANCH_MAP are not used in the static config (see home-sections.ts).
+      return base;
+  }
+}
+
+/** Every home section with the data it renders resolved live against the catalog. */
 export const getHomeSections = cachedRead(
   "home",
-  [CacheTag.HOME, CacheTag.PRODUCTS, CacheTag.BRANDS, CacheTag.FAQS, CacheTag.TESTIMONIALS, CacheTag.POSTS],
+  [CacheTag.PRODUCTS, CacheTag.CATEGORIES, CacheTag.BRANDS],
   async (locale: "ar" | "en"): Promise<HomeSectionView[]> => {
-    const sections = await HomeSectionModel.find({ isActive: true }).sort({ sortOrder: 1, _id: 1 }).lean<HomeSectionSchema[]>();
     const [brands, faqs, testimonials] = await Promise.all([getBrands(), getFaqs(), getTestimonials()]);
-
-    return Promise.all(
-      sections.map(async (section) => {
-        const view = blank(section);
-        const payload = section.payload;
-        switch (section.type) {
-          case HomeSectionType.PRODUCT_RAIL: {
-            const limit = payload.limit ?? 12;
-            if (payload.source === ProductRailSource.CATEGORY && payload.category && mongoose.isValidObjectId(payload.category)) {
-              const category = await CategoryModel.findById(payload.category).select("name slug").lean();
-              view.category = category ? { name: category.name, slug: category.slug } : null;
-              view.products = (await listProducts({ category: payload.category, sort: ProductSort.BEST_SELLING, limit })).items;
-            } else {
-              view.products = (await getProductsByIds(payload.products ?? [])).slice(0, limit);
-            }
-            break;
-          }
-          case HomeSectionType.SPOTLIGHT:
-            view.products = payload.product ? await getProductsByIds([payload.product]) : [];
-            break;
-          case HomeSectionType.BRAND_CAROUSEL: {
-            const wanted = payload.brands ?? [];
-            view.brands = wanted.length
-              ? wanted.map((id) => brands.find((brand) => brand._id === id)).filter((brand): brand is BrandView => Boolean(brand))
-              : brands;
-            break;
-          }
-          case HomeSectionType.FAQ:
-            view.faqs = faqs;
-            break;
-          case HomeSectionType.TESTIMONIALS:
-            view.testimonials = testimonials;
-            break;
-          case HomeSectionType.BLOG_RAIL:
-            view.posts = (await getPosts(locale, 1, payload.limit ?? 8)).items;
-            break;
-        }
-        return view;
-      })
-    );
+    return Promise.all(HOME_SECTIONS.map((section, index) => resolveSection(section, index, locale, faqs, testimonials, brands)));
   }
 );

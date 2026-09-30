@@ -12,5 +12,5 @@ export const PUT = createPutRoute({
   params: ObjectIdParamsDto,
   body: ProductStatusDto,
   handler: async ({ params, body }) => productRepository.update({ where: { _id: params.id } }, { isActive: body.isActive }),
-  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id), CacheTag.HOME],
+  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id)],
 });

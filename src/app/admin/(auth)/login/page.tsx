@@ -4,7 +4,7 @@ import { adminLoginEndpoint, adminRefreshEndpoint } from "api/admin-auth.endpoin
 import { getDefaultApiClient, toAppError } from "@kira-joo/frontend-toolkit-core";
 import { AlertTriangle, Lock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,24 @@ function safeNext(raw: string | null): string {
   return "/admin/dashboard";
 }
 
+/** `useSearchParams` requires a Suspense boundary above it even on a `force-dynamic` page. */
 export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<CheckingSession />}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function CheckingSession() {
+  return (
+    <main className="flex min-h-dvh items-center justify-center bg-[#f8fafc]">
+      <span className="sr-only">Checking your session…</span>
+    </main>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = safeNext(searchParams.get("next"));
@@ -62,13 +79,7 @@ export default function AdminLoginPage() {
     }
   };
 
-  if (checkingSession) {
-    return (
-      <main className="flex min-h-dvh items-center justify-center bg-[#f8fafc]">
-        <span className="sr-only">Checking your session…</span>
-      </main>
-    );
-  }
+  if (checkingSession) return <CheckingSession />;
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-[#f8fafc] p-4">

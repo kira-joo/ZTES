@@ -46,7 +46,10 @@ describe("admin authentication", () => {
   const files = routeFiles(ADMIN_DIR);
 
   it("finds the admin routes, so the sweep cannot pass vacuously", () => {
-    expect(files.length).toBeGreaterThan(25);
+    // Admin manages only Products, Categories, Coupons, Orders (plus auth,
+    // dashboard, and a read-only brands list) — see docs/implementation-plan.md's
+    // "Scope correction". This floor is intentionally below the current count.
+    expect(files.length).toBeGreaterThan(15);
   });
 
   it("rejects every protected handler without a session (401)", async () => {
@@ -62,7 +65,7 @@ describe("admin authentication", () => {
         if (response.status !== 401) failures.push(`${method} ${route} → ${response.status}`);
       }
     }
-    expect(checked).toBeGreaterThan(40);
+    expect(checked).toBeGreaterThan(20);
     expect(failures).toEqual([]);
   });
 

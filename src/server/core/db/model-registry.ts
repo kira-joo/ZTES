@@ -8,10 +8,7 @@ import { CouponModel } from "src/server/commerce/coupon.schema";
 import { CustomerModel } from "src/server/commerce/customer.schema";
 import { OrderSequenceModel } from "src/server/commerce/order-sequence.schema";
 import { OrderModel } from "src/server/commerce/order.schema";
-import { HomeSectionModel } from "src/server/content/home-section.schema";
-import { PageModel, PostModel } from "src/server/content/page.schema";
-import { FaqModel, NewsletterSubscriberModel, TestimonialModel } from "src/server/content/small-content.schema";
-import { StoreSettingsModel } from "src/server/content/store-settings.schema";
+import { NewsletterSubscriberModel } from "src/server/content/small-content.schema";
 import { AdminRefreshTokenModel } from "src/server/core/auth/admin-refresh-token.schema";
 import { IdempotencyRecordModel } from "src/server/core/idempotency/idempotency-record.schema";
 
@@ -27,16 +24,10 @@ export const ALL_MODELS = [
   CategoryModel,
   CouponModel,
   CustomerModel,
-  FaqModel,
-  HomeSectionModel,
   IdempotencyRecordModel,
   NewsletterSubscriberModel,
   OrderModel,
   OrderSequenceModel,
-  PageModel,
-  PostModel,
   ProductModel,
   ReviewModel,
-  StoreSettingsModel,
-  TestimonialModel,
 ] as unknown as Model<never>[];

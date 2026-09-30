@@ -1,5 +1,4 @@
-import { BadRequestError, ConflictError, NotFoundError } from "@kira-joo/backend-toolkit-core";
-import { withTransaction } from "@kira-joo/backend-toolkit-mongoose";
+import { BadRequestError, ConflictError } from "@kira-joo/backend-toolkit-core";
 import { compare, toMoney } from "@kira-joo/toolkit-common";
 import mongoose from "mongoose";
 import { sanitizeLocalizedRichText } from "src/server/core/html/sanitize-html";
@@ -136,15 +135,4 @@ export async function recomputeProductRating(productId: mongoose.Types.ObjectId 
     { $set: { ratingAverage: combined.average, ratingCount: combined.count } },
     { session }
   );
-}
-
-/** A review change and the product's rating move together or not at all. */
-export async function mutateReview<T>(reviewId: string, mutate: (session: mongoose.ClientSession) => Promise<T>) {
-  return withTransaction(async (tx) => {
-    const review = await ReviewModel.findById(reviewId).session(tx.session).select("product").lean();
-    if (!review) throw new NotFoundError("Review not found.");
-    const result = await mutate(tx.session);
-    await recomputeProductRating(review.product, tx.session);
-    return tx.complete(result);
-  });
 }

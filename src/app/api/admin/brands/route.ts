@@ -3,4 +3,9 @@ import { adminCollectionRoutes } from "src/server/core/crud/admin-crud";
 
 export const dynamic = "force-dynamic";
 
-export const { GET, POST } = adminCollectionRoutes(brandCrud);
+/**
+ * Read-only: brands have no admin create/edit/delete screen (see
+ * docs/implementation-plan.md's "Scope correction"). This list is used only
+ * to populate the product form's brand picker.
+ */
+export const { GET } = adminCollectionRoutes(brandCrud);

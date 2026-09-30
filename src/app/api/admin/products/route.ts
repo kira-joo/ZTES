@@ -34,5 +34,5 @@ export const POST = createPostRoute({
     const dto = await validateDto(ProductDto, await request.json());
     return productRepository.save((await productPayload(dto)) as never);
   },
-  revalidateTags: [CacheTag.PRODUCTS, CacheTag.HOME],
+  revalidateTags: [CacheTag.PRODUCTS],
 });

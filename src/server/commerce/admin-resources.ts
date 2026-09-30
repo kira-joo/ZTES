@@ -7,7 +7,7 @@ export const couponCrud = {
   repository: couponRepository,
   dto: CouponDto,
   listQuery: ListCouponsQueryDto,
-  tags: [CacheTag.COUPONS, CacheTag.HOME, CacheTag.PRODUCTS],
+  tags: [CacheTag.COUPONS, CacheTag.PRODUCTS],
   toEntity: (dto: CouponDto) => ({
     ...dto,
     code: dto.code.toUpperCase(),

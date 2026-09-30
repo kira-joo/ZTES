@@ -2,9 +2,10 @@
 import { toMoney } from "@kira-joo/toolkit-common";
 import { describe, expect, it, vi } from "vitest";
 import { Locale, OrderStatus, PaymentMethod } from "src/common/enums";
+import { SAFE_USE_TEXT } from "src/content/store-config";
 import { readMoney } from "src/server/core/money";
 import { ProductModel } from "src/server/catalog/product.schema";
-import { address, contact, makeCart, makeCoupon, makeProduct, seedSettings } from "src/test/fixtures";
+import { address, contact, makeCart, makeCoupon, makeProduct } from "src/test/fixtures";
 import { setupTestDatabase } from "src/test/mongo";
 import { CartModel } from "./cart.schema";
 import { CouponModel } from "./coupon.schema";
@@ -20,7 +21,6 @@ const place = (cartTokenHash: string, overrides: Partial<Parameters<typeof place
 
 describe("placeOrder", () => {
   it("commits the order, stock, coupon, customer, sequence and clears the cart", async () => {
-    await seedSettings();
     const product = await makeProduct({ price: toMoney("229.00"), stock: 5 });
     await makeCoupon({ code: "SAVE10", usageLimit: 3 });
     const { tokenHash } = await makeCart([{ product: product._id, quantity: 2 }], { couponCode: "SAVE10" });
@@ -38,7 +38,7 @@ describe("placeOrder", () => {
     expect(readMoney(order!.pricing.total).toFixed(2)).toBe("412.20");
     expect(order!.contact.phone).toBe("+966563033126");
     expect(order!.accessTokenHash).toHaveLength(64);
-    expect(order!.safeUse.text.ar).toBe("نص");
+    expect(order!.safeUse.text.ar).toBe(SAFE_USE_TEXT.ar);
 
     expect((await ProductModel.findById(product._id).lean())!.stock).toBe(3);
     expect((await ProductModel.findById(product._id).lean())!.soldCount).toBe(2);
@@ -48,7 +48,6 @@ describe("placeOrder", () => {
   });
 
   it("snapshots: a later catalog edit does not change the order", async () => {
-    await seedSettings();
     const product = await makeProduct({ price: toMoney("89.00") });
     const { tokenHash } = await makeCart([{ product: product._id, quantity: 1 }]);
     const { orderNumber } = await place(tokenHash);
@@ -61,7 +60,6 @@ describe("placeOrder", () => {
   });
 
   it("rolls back every collection when a write inside the transaction fails", async () => {
-    await seedSettings();
     const product = await makeProduct({ stock: 5 });
     await makeCoupon({ code: "SAVE10" });
     const { tokenHash } = await makeCart([{ product: product._id, quantity: 2 }], { couponCode: "SAVE10" });
@@ -81,7 +79,6 @@ describe("placeOrder", () => {
   });
 
   it("refuses to oversell and leaves the stock untouched", async () => {
-    await seedSettings();
     const product = await makeProduct({ stock: 1 });
     const { tokenHash } = await makeCart([{ product: product._id, quantity: 2 }]);
     await expect(place(tokenHash)).rejects.toMatchObject({ statusCode: 409 });
@@ -90,7 +87,6 @@ describe("placeOrder", () => {
   });
 
   it("requires the safe-use acknowledgement and a Saudi mobile", async () => {
-    await seedSettings();
     const product = await makeProduct();
     const { tokenHash } = await makeCart([{ product: product._id, quantity: 1 }]);
     await expect(place(tokenHash, { safeUseAccepted: false })).rejects.toMatchObject({ statusCode: 400 });
@@ -98,7 +94,6 @@ describe("placeOrder", () => {
   });
 
   it("matches returning customers by phone and never overwrites a stored email", async () => {
-    await seedSettings();
     const product = await makeProduct();
     const first = await makeCart([{ product: product._id, quantity: 1 }]);
     await place(first.tokenHash, { contact: contact("0563033126", "first@example.sa") });
@@ -116,7 +111,6 @@ describe("placeOrder", () => {
   });
 
   it("two concurrent first orders from one phone converge on one customer", async () => {
-    await seedSettings();
     const product = await makeProduct({ stock: 50 });
     const carts = await Promise.all([1, 2, 3].map(() => makeCart([{ product: product._id, quantity: 1 }])));
     const results = await Promise.allSettled(carts.map((cart) => place(cart.tokenHash)));
@@ -128,7 +122,6 @@ describe("placeOrder", () => {
   });
 
   it("rejects an exhausted coupon without placing the order", async () => {
-    await seedSettings();
     const product = await makeProduct();
     await makeCoupon({ code: "ONCE", usageLimit: 1, usedCount: 1 });
     const { tokenHash } = await makeCart([{ product: product._id, quantity: 1 }], { couponCode: "ONCE" });

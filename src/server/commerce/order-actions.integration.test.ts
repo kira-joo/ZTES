@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { Locale, OrderStatus } from "src/common/enums";
 import { ProductModel } from "src/server/catalog/product.schema";
-import { address, contact, makeCart, makeCoupon, makeProduct, seedSettings } from "src/test/fixtures";
+import { address, contact, makeCart, makeCoupon, makeProduct } from "src/test/fixtures";
 import { setupTestDatabase } from "src/test/mongo";
 import { CouponModel } from "./coupon.schema";
 import { transitionOrder } from "./order-actions";
@@ -12,7 +12,6 @@ import { placeOrder } from "./place-order";
 setupTestDatabase();
 
 async function placed(stock = 5, quantity = 2) {
-  await seedSettings();
   const product = await makeProduct({ stock });
   await makeCoupon({ code: "SAVE10" });
   const { tokenHash } = await makeCart([{ product: product._id, quantity }], { couponCode: "SAVE10" });

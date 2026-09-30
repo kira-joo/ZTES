@@ -32,7 +32,7 @@ export async function HomeSections({ sections, settings, locale }: { sections: H
     const title = L(section.title);
     switch (section.type) {
       case HomeSectionType.HERO_SLIDER:
-        return <HeroSlider items={section.items} dir={dir} slideLabel={(index) => t("slide", { index })} />;
+        return <HeroSlider items={section.items} dir={dir} />;
 
       case HomeSectionType.TILE_ROW:
         return (

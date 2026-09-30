@@ -1,13 +1,20 @@
 "use client";
 
 import useEmblaCarousel from "embla-carousel-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import type { HomeMediaItemView } from "src/common/types/storefront";
 import { SmartLink } from "src/components/store/smart-link";
 import { StoreImage } from "src/components/store/store-image";
 
-/** Full-width hero slides (separate mobile artwork when provided), autoplay, dots. */
-export function HeroSlider({ items, dir, slideLabel }: { items: HomeMediaItemView[]; dir: "rtl" | "ltr"; slideLabel: (index: number) => string }) {
+/**
+ * Full-width hero slides (separate mobile artwork when provided), autoplay,
+ * dots. Translates its own accessible labels — a Server Component cannot pass
+ * a function prop (e.g. a `getTranslations` closure) across the RSC boundary.
+ */
+export function HeroSlider({ items, dir }: { items: HomeMediaItemView[]; dir: "rtl" | "ltr" }) {
+  const t = useTranslations("home");
+  const slideLabel = (index: number) => t("slide", { index });
   const [viewportRef, api] = useEmblaCarousel({ direction: dir, loop: items.length > 1 });
   const [selected, setSelected] = useState(0);
   const onSelect = useCallback(() => api && setSelected(api.selectedScrollSnap()), [api]);

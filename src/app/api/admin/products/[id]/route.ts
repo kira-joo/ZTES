@@ -22,7 +22,7 @@ export const PUT = createPutRoute({
     const dto = await validateDto(ProductDto, await request.json());
     return productRepository.update({ where: { _id: params.id } }, (await productPayload(dto)) as never);
   },
-  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id), CacheTag.HOME],
+  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id)],
 });
 
 /** Soft delete: past orders snapshot the product, and the admin can restore it. */
@@ -30,5 +30,5 @@ export const DELETE = createDeleteRoute({
   auth: true,
   params: ObjectIdParamsDto,
   handler: async ({ params }) => productRepository.softDelete({ where: { _id: params.id } }),
-  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id), CacheTag.HOME],
+  revalidateTags: ({ params }) => [CacheTag.PRODUCTS, CacheTag.product(params.id)],
 });

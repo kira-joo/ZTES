@@ -4,20 +4,9 @@ import { CouponType } from "src/common/enums";
 import { ProductModel } from "src/server/catalog/product.schema";
 import { CartModel } from "src/server/commerce/cart.schema";
 import { CouponModel } from "src/server/commerce/coupon.schema";
-import { StoreSettingsModel } from "src/server/content/store-settings.schema";
 import { randomToken, sha256 } from "src/server/core/crypto";
 
 let counter = 0;
-
-export async function seedSettings(overrides: Record<string, unknown> = {}) {
-  await StoreSettingsModel.create({
-    storeName: { ar: "متجر", en: "Store" },
-    delivery: { city: { ar: "الرياض", en: "Riyadh" }, fee: toMoney(9), freeShippingThreshold: toMoney(199), estimate: { ar: "", en: "" } },
-    vatRate: 15,
-    safeUseText: { ar: "نص", en: "text" },
-    ...overrides,
-  });
-}
 
 export async function makeProduct(overrides: Record<string, unknown> = {}) {
   counter += 1;
