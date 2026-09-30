@@ -1,0 +1,27 @@
+{
+  "sortBy": "ترتيب حسب",
+  "sort": {
+    "suggested": "مقترحاتنا",
+    "best-selling": "الأكثر مبيعًا",
+    "top-rated": "الأعلى تقييمًا",
+    "price-high": "الأعلى سعرًا",
+    "price-low": "الأقل سعرًا"
+  },
+  "filters": "تصفية",
+  "categories": "الأقسام",
+  "brands": "العلامات التجارية",
+  "searchInFilter": "ابحث…",
+  "showMore": "المزيد",
+  "showLess": "أقل",
+  "clearFilters": "مسح الكل",
+  "applyFilters": "عرض النتائج",
+  "results": "{count, plural, =0 {لا توجد منتجات} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
+  "empty": "لا توجد منتجات هنا بعد",
+  "emptyHint": "جرّب قسمًا آخر أو امسح عوامل التصفية.",
+  "page": "صفحة {page} من {total}",
+  "offersTitle": "العروض",
+  "offersSubtitle": "أقوى الخصومات على منتجات المكافحة والزراعة",
+  "brandsIndexTitle": "العلامات التجارية",
+  "searchTitle": "نتائج البحث عن “{query}”",
+  "searchEmptyTitle": "البحث"
+}

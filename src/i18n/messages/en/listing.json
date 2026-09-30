@@ -1,0 +1,27 @@
+{
+  "sortBy": "Sort by",
+  "sort": {
+    "suggested": "Our picks",
+    "best-selling": "Best selling",
+    "top-rated": "Top rated",
+    "price-high": "Price: high to low",
+    "price-low": "Price: low to high"
+  },
+  "filters": "Filters",
+  "categories": "Categories",
+  "brands": "Brands",
+  "searchInFilter": "Search…",
+  "showMore": "More",
+  "showLess": "Less",
+  "clearFilters": "Clear all",
+  "applyFilters": "Show results",
+  "results": "{count, plural, =0 {No products} one {# product} other {# products}}",
+  "empty": "No products here yet",
+  "emptyHint": "Try another category or clear the filters.",
+  "page": "Page {page} of {total}",
+  "offersTitle": "Offers",
+  "offersSubtitle": "The best deals on pest control and agriculture",
+  "brandsIndexTitle": "Brands",
+  "searchTitle": "Search results for “{query}”",
+  "searchEmptyTitle": "Search"
+}

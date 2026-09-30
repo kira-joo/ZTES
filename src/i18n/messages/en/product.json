@@ -1,0 +1,107 @@
+{
+  "vatIncluded": "Price includes VAT",
+  "breadcrumbHome": "Home",
+  "rating": {
+    "count": "({count} ratings)",
+    "noRatings": "No ratings yet"
+  },
+  "soldCount": "Bought {count} times",
+  "stock": {
+    "inStock": "In stock",
+    "lastUnits": "Limited stock, {count} left",
+    "outOfStock": "Currently unavailable"
+  },
+  "sale": {
+    "endsIn": "Sale ends in",
+    "days": "d",
+    "hours": "h",
+    "minutes": "m",
+    "seconds": "s"
+  },
+  "description": {
+    "title": "Description",
+    "readMore": "Read more",
+    "readLess": "Read less"
+  },
+  "details": {
+    "title": "Details",
+    "weight": "Weight",
+    "sku": "SKU"
+  },
+  "coupon": {
+    "label": "Use coupon",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "options": {
+    "required": "Required",
+    "unavailable": "Unavailable",
+    "selectRequired": "Please select {group}"
+  },
+  "quantity": {
+    "label": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity"
+  },
+  "tierHint": "Buy {count} and save {percent}%",
+  "somethingWrong": "Something went wrong",
+  "addToCart": "Add to cart",
+  "addedToCart": "{name} added to cart",
+  "viewCart": "View cart",
+  "buyNow": "Buy now",
+  "wishlist": {
+    "add": "Add to wishlist",
+    "remove": "Remove from wishlist"
+  },
+  "share": {
+    "label": "Share",
+    "copied": "Link copied"
+  },
+  "gallery": {
+    "zoom": "Zoom image",
+    "close": "Close",
+    "next": "Next image",
+    "previous": "Previous image",
+    "thumbnail": "Thumbnail {index}"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "empty": "No reviews for this product yet.",
+    "writeReview": "Write a review",
+    "name": "Name",
+    "rating": "Rating",
+    "comment": "Your comment",
+    "submit": "Submit review",
+    "submitted": "Thank you! Your review will appear after moderation.",
+    "loadMore": "Show more",
+    "page": "Page {page} of {total}"
+  },
+  "related": {
+    "title": "You may also like"
+  },
+  "alsoViewed": {
+    "title": "Customers also viewed"
+  },
+  "outOfStock": {
+    "title": "This product is currently unavailable",
+    "body": "You can explore similar products below.",
+    "alternatives": "Alternative products"
+  },
+  "quickView": {
+    "title": "Quick view",
+    "viewFullDetails": "View full details"
+  },
+  "notFound": {
+    "title": "Product not found",
+    "body": "This product may be unavailable or was removed.",
+    "backHome": "Back to home"
+  },
+  "wishlistPage": {
+    "title": "Wishlist",
+    "empty": {
+      "title": "Your wishlist is empty",
+      "body": "Tap the heart icon on any product to save it here.",
+      "cta": "Browse products"
+    }
+  }
+}

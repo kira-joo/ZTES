@@ -1,0 +1,10 @@
+{
+  "required": "This field is required",
+  "invalidPhone": "Enter a valid Saudi mobile number",
+  "invalidEmail": "Enter a valid email address",
+  "tooLong": "This text is too long",
+  "invalid": "Invalid value",
+  "safeUseRequired": "You must accept the safe-use acknowledgement",
+  "invalidUrl": "Enter a valid https:// link",
+  "tooMany": "That quantity is more than allowed"
+}

@@ -1,0 +1,15 @@
+import { readFileSync } from "fs";
+const html = readFileSync("data/reference/raw/page/1172106860.ar.html", "utf8");
+const titleMatch = /<h1[^>]*>([^<]*)<\/h1>/.exec(html);
+console.log("title:", titleMatch?.[1]);
+const idMatch = /\/page-(\d+)/.exec(html);
+console.log("id:", idMatch?.[1]);
+const marker = 'class="content-entry">';
+const start = html.indexOf(marker);
+console.log("marker found at", start);
+const rest = start + marker.length;
+console.log(html.slice(rest, rest+300));
+console.log("---looking for closing pattern---");
+const bodyMatch = /class="content-entry">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/.exec(html);
+console.log("bodyMatch found:", !!bodyMatch);
+if (bodyMatch) console.log("length", bodyMatch[1].length, bodyMatch[1].slice(-200));

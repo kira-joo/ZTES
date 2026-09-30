@@ -1,0 +1,14 @@
+.next
+node_modules
+coverage
+package-lock.json
+
+# Markdown is authored, not generated.
+#
+# Prettier preserves prose (`proseWrap: "preserve"`) but re-pads every cell of
+# every table to the widest row. Adding one row then rewrites every other row,
+# so a one-line change arrives as a fifty-line diff — the exact fake-diff
+# problem formatting is supposed to remove. The docs here are hand-wrapped and
+# reviewed as prose; they are not better for being machine-aligned.
+*.md
+.qa/

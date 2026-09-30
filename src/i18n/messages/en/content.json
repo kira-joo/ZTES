@@ -1,0 +1,9 @@
+{
+  "notFoundTitle": "Page not found",
+  "notFoundBody": "The page may have moved or been removed.",
+  "backHome": "Back to home",
+  "errorTitle": "Something went wrong",
+  "errorBody": "This page couldn't load. Please try again.",
+  "publishedOn": "Published {date}",
+  "blogEmpty": "No articles yet"
+}

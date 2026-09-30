@@ -1,0 +1,106 @@
+@import "tailwindcss";
+@import "@kira-joo/frontend-toolkit-tailwind/theme.css";
+
+@source "../../node_modules/@kira-joo/frontend-toolkit-tailwind/dist";
+
+/*
+ * Storefront design tokens — the reference store's palette (Orkida, Salla
+ * "Twilight" theme): brand green #91c643 with its dark/light pair, a near-white
+ * canvas and a grey header band. Components use these tokens, never hex.
+ *
+ * The toolkit's semantic roles (--ftk-*) are pointed at the same values so its
+ * components (dialogs, inputs, toasts) match the storefront.
+ */
+:root {
+  --ftk-primary: #91c643;
+  --ftk-primary-hover: #6ba01d;
+  --ftk-text-on-primary: #ffffff;
+  --ftk-focus: #6ba01d;
+  --ftk-surface: #ffffff;
+  --ftk-surface-muted: #f9fafb;
+  --ftk-border: #e5e7eb;
+}
+
+@theme inline {
+  --color-brand: #91c643;
+  --color-brand-dark: #6ba01d;
+  --color-brand-light: #b7ec69;
+  --color-brand-deep: #124700;
+  --color-brand-soft: #f1f8e6;
+  --color-canvas: #f9fafb;
+  --color-band: #ececec;
+  --color-card: #ffffff;
+  --color-ink: #1f2937;
+  --color-ink-soft: #4b5563;
+  --color-ink-muted: #9ca3af;
+  --color-line: #e5e7eb;
+  --color-sale: #ef4444;
+  --color-sale-soft: #fef2f2;
+  --color-star: #f59e0b;
+  --color-whatsapp: #25d366;
+
+  --font-sans: var(--font-store), system-ui, sans-serif;
+
+  --radius-card: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.04);
+
+  --ease-store: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-store: 220ms;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Sanitised rich text from the admin (descriptions, pages, posts). */
+.rich-text {
+  line-height: 1.9;
+}
+.rich-text p { margin-block: 0.75em; }
+.rich-text h2 { font-size: 1.25rem; font-weight: 700; margin-block: 1em 0.5em; }
+.rich-text h3 { font-size: 1.1rem; font-weight: 700; margin-block: 1em 0.5em; }
+.rich-text ul { list-style: disc; padding-inline-start: 1.25rem; }
+.rich-text ol { list-style: decimal; padding-inline-start: 1.25rem; }
+.rich-text a { color: var(--color-brand-dark); text-decoration: underline; }
+.rich-text img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+.rich-text table { width: 100%; border-collapse: collapse; }
+.rich-text td, .rich-text th { border: 1px solid var(--color-line); padding: 0.5rem; }
+
+/* Announcement marquee: two identical tracks slide one track-width, forever. */
+@keyframes store-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(var(--marquee-dir, -1) * 50%)); }
+}
+.store-marquee-track {
+  animation: store-marquee 40s linear infinite;
+}
+[dir="rtl"] .store-marquee-track { --marquee-dir: 1; }
+.store-marquee:hover .store-marquee-track { animation-play-state: paused; }
+
+/* Drawer / sheet entrance (the toolkit's dialog system renders them instantly). */
+@keyframes store-drawer-in-start { from { transform: translateX(var(--drawer-from, -100%)); } to { transform: none; } }
+[dir="rtl"] .store-drawer-start { --drawer-from: 100%; }
+.store-drawer-start { animation: store-drawer-in-start var(--duration-store) var(--ease-store); }
+@keyframes store-sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+.store-sheet { animation: store-sheet-in var(--duration-store) var(--ease-store); }
+@keyframes store-fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.store-reveal { animation: store-fade-up 480ms var(--ease-store) both; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }

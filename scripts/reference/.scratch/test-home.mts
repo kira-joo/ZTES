@@ -1,0 +1,20 @@
+import { readFileSync } from "fs";
+import { parseHomePage } from "../parse/home";
+
+const html = readFileSync("data/reference/raw/home/ar.html", "utf8");
+const parsed = parseHomePage(html);
+console.log("heroSlides:", parsed.heroSlides.length, parsed.heroSlides[0]);
+console.log("brandCarouselHrefs:", parsed.brandCarouselHrefs.length);
+console.log("spotlights:", parsed.spotlights.length, parsed.spotlights);
+console.log("productRails:", parsed.productRails.length);
+for (const r of parsed.productRails) console.log(' -', r.title, r.source, r.ids.length, 'limit', r.limit);
+console.log("bannerGroups:", parsed.bannerGroups.length);
+for (const b of parsed.bannerGroups) console.log(' -', b.title, 'items', b.items.length, b.items[0]);
+console.log("trustItems:", parsed.trustItems.length, parsed.trustItems[0]);
+console.log("faqs:", parsed.faqs.length, parsed.faqs[0]);
+console.log("blogPostIds:", parsed.blogPostIds.length);
+console.log("testimonials:", parsed.testimonials.length, parsed.testimonials[0]);
+console.log("branches:", parsed.branches.length, parsed.branches);
+const names = parsed.testimonials.map(t=>t.authorName+t.body);
+console.log("unique testimonials:", new Set(names).size);
+console.log("unique blogIds:", new Set(parsed.blogPostIds).size, [...new Set(parsed.blogPostIds)]);

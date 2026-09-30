@@ -1,0 +1,46 @@
+{
+  "title": "Checkout",
+  "summary": {
+    "title": "Order summary",
+    "itemCount": "{count, plural, =0 {no items} one {1 item} other {# items}}"
+  },
+  "contact": {
+    "title": "Contact details",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Mobile number",
+    "email": "Email address"
+  },
+  "delivery": {
+    "title": "Delivery address",
+    "city": "City",
+    "district": "District",
+    "street": "Street",
+    "building": "Building number (optional)",
+    "notes": "Address notes (optional)",
+    "mapUrl": "Google Maps link (optional)",
+    "mapUrlPlaceholder": "https://maps.google.com/…",
+    "estimateLabel": "Estimated delivery time",
+    "feeLabel": "Delivery fee",
+    "free": "Free"
+  },
+  "payment": {
+    "title": "Payment method",
+    "cod": "Cash on delivery",
+    "codNote": "Pay in cash or by card when your order arrives."
+  },
+  "notes": {
+    "label": "Order notes (optional)",
+    "placeholder": "Anything else we should know?"
+  },
+  "submit": "Confirm order",
+  "submitting": "Placing your order…",
+  "backToCart": "Back to cart",
+  "errors": {
+    "emptyCart": "Your cart is empty. Add products before checking out.",
+    "cartChangedTitle": "Some items in your cart changed",
+    "cartChangedBody": "Please review your cart before continuing.",
+    "couponRejected": "That coupon can no longer be applied. Please review your cart before continuing.",
+    "generic": "We couldn't place your order. Please try again."
+  }
+}

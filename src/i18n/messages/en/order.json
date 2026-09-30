@@ -1,0 +1,62 @@
+{
+  "thankYou": "Thank you for your order!",
+  "confirmedBody": "We've received your order and will start preparing it shortly.",
+  "orderNumber": "Order number",
+  "status": {
+    "title": "Order status",
+    "PLACED": "Order placed",
+    "CONFIRMED": "Order confirmed",
+    "OUT_FOR_DELIVERY": "Out for delivery",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled"
+  },
+  "lines": {
+    "title": "Products",
+    "weight": "Weight: {weight}",
+    "quantity": "Quantity: {count}"
+  },
+  "summary": {
+    "title": "Invoice summary",
+    "subtotal": "Products total",
+    "couponDiscount": "Coupon discount",
+    "shipping": "Shipping",
+    "free": "Free",
+    "vatIncluded": "VAT included ({amount})",
+    "total": "Total"
+  },
+  "delivery": {
+    "title": "Delivery address",
+    "notes": "Notes: {notes}"
+  },
+  "contact": {
+    "title": "Contact details"
+  },
+  "gift": {
+    "title": "Gift",
+    "to": "To: {name}",
+    "message": "Message: {message}"
+  },
+  "payment": {
+    "title": "Payment method",
+    "cod": "Cash on delivery"
+  },
+  "customerNotes": {
+    "title": "Your notes"
+  },
+  "review": {
+    "title": "Rate your products",
+    "prompt": "Share your thoughts on {name}",
+    "name": "Your name",
+    "rating": "Rating",
+    "comment": "Your comment (optional)",
+    "submit": "Submit review",
+    "submitted": "Thank you! Your review will appear after moderation.",
+    "alreadySubmitted": "You've already reviewed this product.",
+    "error": "We couldn't submit your review. Please try again."
+  },
+  "notFound": {
+    "title": "Order not found",
+    "body": "We couldn't find this order. Check the link or contact us.",
+    "backHome": "Back to home"
+  }
+}

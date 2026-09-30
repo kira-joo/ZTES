@@ -1,0 +1,30 @@
+# Local development database: a SINGLE-NODE REPLICA SET. Order placement is one
+# multi-document transaction, and transactions do not run on a standalone node.
+#
+# Port 27021 so it never contends with sibling repositories' databases.
+#
+#   docker compose up -d      # start
+#   docker compose down       # stop, keep data
+#   docker compose down -v    # stop, discard data
+services:
+  mongo:
+    image: mongo:8
+    container_name: ztes-mongo
+    restart: unless-stopped
+    ports:
+      - "27021:27017"
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - ztes-mongo-data:/data/db
+    healthcheck:
+      # Initiates the set on first start; a no-op afterwards. The member host is
+      # the in-container address, so connection strings use directConnection=true.
+      test: >
+        mongosh --quiet --eval "try { rs.status().ok } catch (e) { rs.initiate({_id:'rs0',members:[{_id:0,host:'localhost:27017'}]}).ok }"
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 10s
+
+volumes:
+  ztes-mongo-data:

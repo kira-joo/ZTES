@@ -1,0 +1,107 @@
+{
+  "vatIncluded": "السعر شامل الضريبة",
+  "breadcrumbHome": "الرئيسية",
+  "rating": {
+    "count": "({count} تقييم)",
+    "noRatings": "لا توجد تقييمات بعد"
+  },
+  "soldCount": "تم شراؤه {count} مرة",
+  "stock": {
+    "inStock": "متوفر",
+    "lastUnits": "الكمية محدودة، تبقّى {count}",
+    "outOfStock": "غير متوفر حالياً"
+  },
+  "sale": {
+    "endsIn": "ينتهي العرض خلال",
+    "days": "ي",
+    "hours": "س",
+    "minutes": "د",
+    "seconds": "ث"
+  },
+  "description": {
+    "title": "الوصف",
+    "readMore": "اقرأ المزيد",
+    "readLess": "اقرأ أقل"
+  },
+  "details": {
+    "title": "التفاصيل",
+    "weight": "الوزن",
+    "sku": "رمز المنتج"
+  },
+  "coupon": {
+    "label": "استخدم الكوبون",
+    "copy": "نسخ",
+    "copied": "تم النسخ"
+  },
+  "options": {
+    "required": "مطلوب",
+    "unavailable": "غير متاح",
+    "selectRequired": "يرجى اختيار {group}"
+  },
+  "quantity": {
+    "label": "الكمية",
+    "decrease": "تقليل الكمية",
+    "increase": "زيادة الكمية"
+  },
+  "tierHint": "اشترِ {count} ووفّر {percent}%",
+  "somethingWrong": "حدث خطأ غير متوقع",
+  "addToCart": "أضف إلى السلة",
+  "addedToCart": "أُضيف {name} إلى السلة",
+  "viewCart": "عرض السلة",
+  "buyNow": "اشترِ الآن",
+  "wishlist": {
+    "add": "أضف إلى المفضلة",
+    "remove": "إزالة من المفضلة"
+  },
+  "share": {
+    "label": "مشاركة",
+    "copied": "تم نسخ الرابط"
+  },
+  "gallery": {
+    "zoom": "تكبير الصورة",
+    "close": "إغلاق",
+    "next": "الصورة التالية",
+    "previous": "الصورة السابقة",
+    "thumbnail": "صورة مصغّرة {index}"
+  },
+  "reviews": {
+    "title": "التقييمات",
+    "empty": "لا توجد تقييمات لهذا المنتج بعد.",
+    "writeReview": "أضف تقييمك",
+    "name": "الاسم",
+    "rating": "التقييم",
+    "comment": "تعليقك",
+    "submit": "إرسال التقييم",
+    "submitted": "شكراً لك! سيظهر تقييمك بعد المراجعة.",
+    "loadMore": "عرض المزيد",
+    "page": "صفحة {page} من {total}"
+  },
+  "related": {
+    "title": "قد يعجبك أيضاً"
+  },
+  "alsoViewed": {
+    "title": "عملاء شاهدوا أيضاً"
+  },
+  "outOfStock": {
+    "title": "هذا المنتج غير متوفر حالياً",
+    "body": "يمكنك استكشاف منتجات مشابهة أدناه.",
+    "alternatives": "منتجات بديلة"
+  },
+  "quickView": {
+    "title": "نظرة سريعة",
+    "viewFullDetails": "عرض كامل التفاصيل"
+  },
+  "notFound": {
+    "title": "المنتج غير موجود",
+    "body": "قد يكون هذا المنتج غير متوفر أو تم حذفه.",
+    "backHome": "العودة للرئيسية"
+  },
+  "wishlistPage": {
+    "title": "المفضلة",
+    "empty": {
+      "title": "قائمة المفضلة فارغة",
+      "body": "أضف المنتجات التي تعجبك بالضغط على أيقونة القلب.",
+      "cta": "تصفّح المنتجات"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "title": "Cart",
+  "itemCount": "{count, plural, =0 {no items} one {1 item} other {# items}}",
+  "empty": {
+    "title": "Your cart is empty",
+    "body": "You haven't added any products to your cart yet.",
+    "cta": "Browse products"
+  },
+  "line": {
+    "weight": "Weight: {weight}",
+    "remove": "Remove",
+    "moveToWishlist": "Move to wishlist",
+    "unitPrice": "Unit price",
+    "tierDiscount": "Quantity discount: -{amount}"
+  },
+  "issue": {
+    "UNAVAILABLE": "This product is no longer available and will be removed at checkout.",
+    "OUT_OF_STOCK": "This product is out of stock.",
+    "INSUFFICIENT_STOCK": "Only {available} left in stock.",
+    "OPTION_REQUIRED": "Please select every required option.",
+    "OPTION_UNAVAILABLE": "One of the selected options is no longer available."
+  },
+  "tierUpsell": {
+    "title": "Add one more and save {percent}%",
+    "addOne": "Add one more",
+    "chip": "{count} pcs = {percent}% off"
+  },
+  "relatedTitle": "You may also like",
+  "safeUse": {
+    "checkboxLabel": "I have read and agree to {title}",
+    "required": "You must accept the safe-use acknowledgement before checking out."
+  },
+  "shipping": {
+    "freeApplied": "You've unlocked free shipping!",
+    "progress": "Add {amount} more for free shipping",
+    "free": "Free"
+  },
+  "gift": {
+    "cardTitle": "Send as a gift",
+    "cardBody": "Add a message and the recipient's details and we'll wrap and deliver it as a gift.",
+    "add": "Send as a gift",
+    "edit": "Edit gift details",
+    "remove": "Remove gift",
+    "dialogTitle": "Gift details",
+    "senderName": "Your name",
+    "recipientName": "Recipient name",
+    "recipientPhone": "Recipient mobile",
+    "message": "Message (optional)",
+    "deliverOn": "Preferred delivery date (optional)",
+    "riyadhOnly": "Delivery within Riyadh only.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "savedNote": "This will be delivered within Riyadh only."
+  },
+  "coupon": {
+    "label": "Have a coupon?",
+    "placeholder": "Enter coupon code",
+    "apply": "Apply",
+    "remove": "Remove",
+    "applied": "Coupon {code} applied",
+    "rejection": {
+      "NOT_FOUND": "That coupon code is not valid.",
+      "INACTIVE": "This coupon is not active.",
+      "NOT_STARTED": "This coupon hasn't started yet.",
+      "EXPIRED": "This coupon has expired.",
+      "USAGE_LIMIT": "This coupon has reached its usage limit.",
+      "MIN_SUBTOTAL": "Your order doesn't meet this coupon's minimum."
+    }
+  },
+  "summary": {
+    "title": "Order summary",
+    "subtotal": "Products total",
+    "couponDiscount": "Coupon discount",
+    "shipping": "Shipping",
+    "vatIncluded": "VAT included ({amount})",
+    "total": "Total",
+    "pricesIncludeVat": "Prices include VAT",
+    "checkout": "Checkout"
+  }
+}
