@@ -78,6 +78,6 @@ docker compose up -d        # local replica set on :27021
 npm run dev                 # :3030
 npm run smoke               # end-to-end HTTP check against the running server
 npm run reference:scrape    # fetch the reference snapshot
-npm run reference:seed      # load it (Cloudinary required unless --skip-images)
+npm run reference:seed      # load it (Cloudinary required unless --skip-images or --demo-images)
 npm run verify              # typecheck, lint, format, tests, build
 ```

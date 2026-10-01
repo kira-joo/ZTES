@@ -81,6 +81,29 @@ Branch pickup was already excluded (Riyadh delivery only, no per-branch stock);
 the home page's `BRANCH_MAP` section is dropped for the same reason rather than
 rendered with fabricated branches.
 
+### Temporary: local demo images for initial client handoff (2026-10-01)
+
+Cloudinary is not yet configured, so every imported product/category/brand
+image field was empty. For the initial handoff the storefront needs to look
+visually complete, so `npm run reference:seed -- --demo-images` fills every
+image field with one of 12 real reference-site product photos downloaded once
+into `public/images/demo/` (`scripts/reference/lib/local-demo-images.ts`),
+picked deterministically from the field's source URL so re-seeding never
+shuffles which photo an item shows. Reuse across many products is expected and
+fine.
+
+**This is not a second image architecture.** Every value is an ordinary
+`ImageAsset` — the same shape Cloudinary produces — just pointing at a local
+`/public` path; `StoreImage` and every other consumer render it identically
+either way, and Admin replaces any of them later through the existing
+Cloudinary upload flow with no code change. The photos are the reference
+site's own product packaging photography (no logo, no contact/social info, no
+people) — the same category of asset already sanctioned for real catalog
+import, not the identity-bearing content excluded above.
+
+Once Cloudinary is configured: `npm run reference:seed -- --overwrite` (no
+`--demo-images`) replaces every local placeholder with a real upload.
+
 ## Rule of parity
 
 If a feature exists on the reference site (orkidastore.com) and does not

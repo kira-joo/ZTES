@@ -11,6 +11,7 @@
  *   npm run reference:seed                  # insert what is missing
  *   npm run reference:seed -- --overwrite   # also update records imported before
  *   npm run reference:seed -- --skip-images # no Cloudinary: image fields stay empty
+ *   npm run reference:seed -- --demo-images # no Cloudinary: image fields get a local placeholder photo instead
  *   npm run reference:seed -- --dry-run     # report only, write nothing
  *
  * Behaviour, stated because it decides what an admin edit survives:
@@ -21,6 +22,13 @@
  * - Images are downloaded once and uploaded through the app's Cloudinary
  *   provider; `data/reference/image-map.json` remembers source URL → asset so a
  *   re-run never uploads twice.
+ * - `--demo-images` is the temporary initial-handoff mode (see
+ *   docs/implementation-plan.md): every image field gets a real `ImageAsset`
+ *   pointing at one of the 12 local photos in `public/images/demo/` instead of
+ *   staying empty, deterministically by source URL (stable across re-seeds).
+ *   It is not a second image architecture — the same field, same shape, same
+ *   `StoreImage` rendering path Cloudinary uses. Admin replaces it with a real
+ *   upload later through the existing flow, same as any other product image.
  * - No cache invalidation happens here (a script is not an HTTP mutation); a
  *   running dev server's cached reads expire on their own hourly ceiling, or
  *   restart it.
@@ -43,11 +51,13 @@ import { connectToDatabase } from "src/server/core/db/connect";
 import { htmlToText, sanitizeRichText } from "src/server/core/html/sanitize-html";
 import { slugify } from "src/server/engines/normalize";
 import { createImageImporter, type ImageImporter } from "./lib/image-importer";
+import { pickLocalDemoImage } from "./lib/local-demo-images";
 import type { LocalizedText, ReferenceSnapshot, ScrapedImage, ScrapedProduct } from "./types";
 
 const DATA_DIR = path.resolve(process.cwd(), "data/reference");
 const OVERWRITE = process.argv.includes("--overwrite");
-const SKIP_IMAGES = process.argv.includes("--skip-images");
+const DEMO_IMAGES = process.argv.includes("--demo-images");
+const SKIP_IMAGES = process.argv.includes("--skip-images") || DEMO_IMAGES;
 const DRY_RUN = process.argv.includes("--dry-run");
 
 const counts: Record<string, { created: number; updated: number; skipped: number }> = {};
@@ -156,9 +166,11 @@ async function main() {
     if (!provider) {
       throw new Error(
         "Cloudinary is not configured (CLOUDINARY_CLOUD_NAME / _API_KEY / _API_SECRET). " +
-          "Configure it, or run with --skip-images to import without images."
+          "Configure it, or run with --skip-images to import without images, or --demo-images for local placeholder photos."
       );
     }
+  } else if (DEMO_IMAGES) {
+    console.warn("[reference:seed] --demo-images: image fields get a local placeholder photo from public/images/demo/. Re-run with neither flag once Cloudinary is configured (use --overwrite to replace them with real uploads).");
   } else {
     console.warn("[reference:seed] --skip-images: every image field is left EMPTY. Re-run without it once Cloudinary is configured (use --overwrite to fill existing records).");
   }
@@ -168,8 +180,11 @@ async function main() {
     mapFile: path.join(DATA_DIR, "image-map.json"),
     onWarning: (message) => warnings.push(message),
   });
-  const image = (source: ScrapedImage | null | undefined, folder: string): Promise<ImageAsset | null> =>
-    source?.sourceUrl ? images.import(source.sourceUrl, folder) : Promise.resolve(null);
+  const image = (source: ScrapedImage | null | undefined, folder: string): Promise<ImageAsset | null> => {
+    if (!source?.sourceUrl) return Promise.resolve(null);
+    if (DEMO_IMAGES) return Promise.resolve(pickLocalDemoImage(source.sourceUrl));
+    return images.import(source.sourceUrl, folder);
+  };
 
   // ─── Brands ───────────────────────────────────────────────────────────────
   const brandIds = new Map<string, mongoose.Types.ObjectId>();
