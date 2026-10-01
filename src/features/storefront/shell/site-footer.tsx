@@ -1,11 +1,12 @@
-import { Banknote, Mail, MessageCircle, Phone } from "lucide-react";
+import { Banknote, Mail, Phone } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
+import { WhatsAppIcon } from "src/components/store/whatsapp-icon";
 import { Link } from "src/i18n/navigation";
 import { pickLocalized, pickSlug } from "src/lib/localized";
 import { getCategoryTree } from "src/server/storefront/catalog.reads";
 import { getPages, getSettings } from "src/server/storefront/content.reads";
-import { BackToTop, NewsletterForm, VatCertificateButton } from "./footer-parts";
+import { NewsletterForm, VatCertificateButton } from "./footer-parts";
 import { SocialIcons } from "./social-icons";
 
 export async function SiteFooter() {
@@ -30,9 +31,6 @@ export async function SiteFooter() {
 
   return (
     <footer className="mt-16 bg-card">
-      <div className="border-b border-line">
-        <BackToTop />
-      </div>
       <div className="mx-auto max-w-[1440px] px-4">
         <div className="flex flex-col gap-6 border-b border-line py-8 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-8">
@@ -74,7 +72,7 @@ export async function SiteFooter() {
               {whatsapp ? (
                 <li>
                   <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label={t("whatsapp")} className="grid size-12 place-items-center rounded-card bg-band text-ink hover:bg-brand hover:text-white">
-                    <MessageCircle className="size-5" aria-hidden="true" />
+                    <WhatsAppIcon className="size-5" />
                   </a>
                 </li>
               ) : null}
@@ -97,6 +95,17 @@ export async function SiteFooter() {
               {settings.contact.phone ? <p dir="ltr" className="rtl:text-right">{settings.contact.phone}</p> : null}
               {settings.contact.email ? <p dir="ltr" className="rtl:text-right">{settings.contact.email}</p> : null}
             </div>
+            <address className="mt-4 space-y-1 text-sm not-italic leading-6 text-ink-soft">
+              <p className="font-semibold text-ink">
+                <bdi lang="ar">{pickLocalized(settings.legal.companyName, locale)}</bdi>
+              </p>
+              <p>{pickLocalized(settings.contact.address, locale)}</p>
+              {settings.contact.shortAddress ? (
+                <p>
+                  {t("shortAddress")}: <span className="font-semibold text-ink" dir="ltr">{settings.contact.shortAddress}</span>
+                </p>
+              ) : null}
+            </address>
           </div>
 
           <div className="space-y-5">

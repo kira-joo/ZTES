@@ -7,9 +7,11 @@
  * Deliberately NOT the reference site's real phone/WhatsApp/email/social
  * handles or VAT/CR numbers: those identify a different real business, and
  * publishing them as ZTES's own would misdirect real people or misstate legal
- * registration ZTES does not hold. Left blank until ZTES has its own.
+ * registration ZTES does not hold. The WhatsApp number, VAT number, company name
+ * and National Address are ZTES's own (from its business documents); the rest
+ * stay blank until ZTES has its own.
  */
-import { toMoney, type LocalizedString, type Money } from "@kira-joo/toolkit-common";
+import { AssetProviderType, toMoney, type LocalizedString, type Money } from "@kira-joo/toolkit-common";
 import type { SettingsView } from "src/common/types/storefront";
 
 /**
@@ -27,6 +29,44 @@ export const SAFE_USE_TEXT: LocalizedString = {
   en: "Pesticides are used according to the label and kept away from children and pets.",
 };
 
+/** ZTES's registered company name. Only the Arabic name is registered, so both locales show it. */
+const COMPANY_NAME = "شركة زاد الفنية لحلول البيئة";
+
+/** ZTES's National Address, field for field as registered. */
+const NATIONAL_ADDRESS = {
+  shortAddress: "RBGC3981",
+  buildingNumber: "3981",
+  street: { ar: "الإمام فيصل بن تركي بن عبدالله", en: "Al Imam Faisal Ibn Turki Ibn Abdullah" },
+  district: { ar: "حي ام سليم", en: "Umm Saleem Dist." },
+  secondaryNumber: "8662",
+  postalCode: "12744",
+  city: { ar: "الرياض", en: "Riyadh" },
+  country: { ar: "المملكة العربية السعودية", en: "Kingdom of Saudi Arabia" },
+} as const;
+
+/** The National Address in its standard order: building street, district, city postal code - secondary number, country. */
+function formatNationalAddress(locale: "ar" | "en"): string {
+  const a = NATIONAL_ADDRESS;
+  const comma = locale === "ar" ? "، " : ", ";
+  return [
+    `${a.buildingNumber} ${a.street[locale]}`,
+    a.district[locale],
+    `${a.city[locale]} ${a.postalCode} - ${a.secondaryNumber}`,
+    a.country[locale],
+  ].join(comma);
+}
+
+/** ZTES's VAT registration certificate: a static /public file in the `ImageAsset` shape the footer dialog renders. */
+const VAT_CERTIFICATE = {
+  provider: AssetProviderType.CLOUDINARY,
+  publicId: "static/images/tax-certificate.png",
+  secureUrl: "/images/tax-certificate.png",
+  format: "png",
+  width: 595,
+  height: 841,
+  bytes: 332325,
+};
+
 export const STORE_CONFIG: SettingsView = {
   storeName: { ar: "ZTES", en: "ZTES" },
   tagline: {
@@ -35,9 +75,15 @@ export const STORE_CONFIG: SettingsView = {
   },
   logo: null,
   favicon: null,
-  contact: { phone: "", whatsapp: "", email: "", address: { ar: "الرياض، المملكة العربية السعودية", en: "Riyadh, Saudi Arabia" } },
+  contact: {
+    phone: "",
+    whatsapp: "+966503220039",
+    email: "",
+    address: { ar: formatNationalAddress("ar"), en: formatNationalAddress("en") },
+    shortAddress: NATIONAL_ADDRESS.shortAddress,
+  },
   social: { instagram: "", x: "", tiktok: "", facebook: "", youtube: "", snapchat: "" },
-  legal: { vatNumber: "", crNumber: "", vatCertificate: null },
+  legal: { companyName: { ar: COMPANY_NAME, en: COMPANY_NAME }, vatNumber: "31496889600003", crNumber: "", vatCertificate: VAT_CERTIFICATE },
   appLinks: { appStore: "", googlePlay: "" },
   announcements: [
     { ar: "الدفع عند الاستلام | شحن مجاني للطلبات فوق 199 ريال داخل الرياض", en: "Cash on delivery | Free shipping in Riyadh on orders over 199 SAR" },

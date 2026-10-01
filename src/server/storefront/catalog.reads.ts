@@ -374,8 +374,20 @@ export const getProductsByIds = cachedRead(
   }
 );
 
+function toReviewView(review: { _id: unknown; authorName: string; rating: number; body: string; reviewedAt: Date }): ReviewView {
+  return {
+    _id: String(review._id),
+    authorName: review.authorName,
+    rating: review.rating,
+    body: review.body,
+    reviewedAt: review.reviewedAt.toISOString(),
+  };
+}
+
+// Versioned key: production briefly had no reviews, and an entry cached then (an empty list)
+// would otherwise outlive the deploy for up to an hour.
 export const getProductReviews = cachedRead(
-  "product-reviews",
+  "product-reviews-v2",
   [CacheTag.REVIEWS],
   async (productId: string, page: number = 1, limit: number = 10): Promise<{ items: ReviewView[]; total: number }> => {
     if (!isId(productId)) return { items: [], total: 0 };
@@ -384,16 +396,24 @@ export const getProductReviews = cachedRead(
       ReviewModel.find(filter).sort({ reviewedAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
       ReviewModel.countDocuments(filter),
     ]);
-    return {
-      items: items.map((review) => ({
-        _id: String(review._id),
-        authorName: review.authorName,
-        rating: review.rating,
-        body: review.body,
-        reviewedAt: review.reviewedAt.toISOString(),
-      })),
-      total,
-    };
+    return { items: items.map(toReviewView), total };
+  }
+);
+
+/**
+ * The home page reviews carousel: the newest published reviews that have text, across every
+ * product. A stars-only rating makes an empty quote card — and the 225 imported ones are
+ * signed with the reference store's name and dated at import, so they would fill every slot.
+ */
+export const getRecentReviews = cachedRead(
+  "recent-reviews",
+  [CacheTag.REVIEWS],
+  async (limit: number = 50): Promise<ReviewView[]> => {
+    const items = await ReviewModel.find({ isPublished: true, body: { $nin: ["", null] } })
+      .sort({ reviewedAt: -1, _id: -1 })
+      .limit(limit)
+      .lean();
+    return items.map(toReviewView);
   }
 );
 

@@ -33,9 +33,9 @@ export interface SettingsView {
   tagline: LocalizedString;
   logo: ImageAsset | null;
   favicon: ImageAsset | null;
-  contact: { phone: string; whatsapp: string; email: string; address: LocalizedString };
+  contact: { phone: string; whatsapp: string; email: string; address: LocalizedString; shortAddress: string };
   social: Record<"instagram" | "x" | "tiktok" | "facebook" | "youtube" | "snapchat", string>;
-  legal: { vatNumber: string; crNumber: string; vatCertificate: ImageAsset | null };
+  legal: { companyName: LocalizedString; vatNumber: string; crNumber: string; vatCertificate: ImageAsset | null };
   appLinks: { appStore: string; googlePlay: string };
   announcements: LocalizedString[];
   footerDescription: LocalizedString;
@@ -197,7 +197,8 @@ export interface HomeSectionView {
   category: { name: LocalizedString; slug: LocalizedSlug } | null;
   brands: BrandView[];
   faqs: FaqView[];
-  testimonials: TestimonialView[];
+  /** TESTIMONIALS: the newest reviews, static initial ones and customer submissions together. */
+  reviews: ReviewView[];
   videoUrl: string;
   couponCode: string;
   endsAt: string | null;
@@ -207,14 +208,6 @@ export interface FaqView {
   _id: string;
   question: LocalizedString;
   answer: LocalizedString;
-}
-
-export interface TestimonialView {
-  _id: string;
-  authorName: string;
-  body: LocalizedString;
-  rating: number;
-  avatar: ImageAsset | null;
 }
 
 export interface PageView {

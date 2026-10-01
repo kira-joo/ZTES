@@ -4,7 +4,6 @@ import { useRequesterMutation } from "@kira-joo/frontend-toolkit-core";
 import { modalPresentation, useDialog, type DialogContentProps } from "@kira-joo/frontend-toolkit-tailwind/dialog";
 import { toast } from "@kira-joo/frontend-toolkit-tailwind";
 import { newsletterEndpoint } from "src/common/api/storefront-content.endpoints";
-import { ArrowUp } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
@@ -47,15 +46,24 @@ export function NewsletterForm() {
   );
 }
 
+/**
+ * The certificate at its own proportions, as large as the viewport allows and never cropped.
+ * Served as the original file: re-encoding a scanned document at the default quality blurs its small print.
+ */
 function CertificateDialog({ titleId, image, title }: DialogContentProps & { image: ImageAsset; title: string }) {
   return (
-    <div className="p-6">
-      <h2 id={titleId} className="mb-4 text-lg font-bold text-ink">
+    <div className="p-4 sm:p-6">
+      <h2 id={titleId} className="mb-4 pe-10 text-lg font-bold text-ink">
         {title}
       </h2>
-      <div className="relative aspect-[3/4] w-full">
-        <Image src={image.secureUrl} alt={title} fill sizes="(min-width: 768px) 32rem, 90vw" className="object-contain" />
-      </div>
+      <Image
+        src={image.secureUrl}
+        alt={title}
+        width={image.width || 595}
+        height={image.height || 841}
+        unoptimized
+        className="mx-auto h-auto max-h-[calc(100dvh-9rem)] w-auto max-w-full rounded-card border border-line"
+      />
     </div>
   );
 }
@@ -65,7 +73,8 @@ export function VatCertificateButton({ vatNumber, certificate }: { vatNumber: st
   const { openDialog } = useDialog();
   const content = (
     <>
-      <span className="grid size-10 place-items-center rounded-lg bg-brand-deep text-[0.6rem] font-bold leading-tight text-white">VAT</span>
+      {/* Decorative: the "VAT number" label beside it carries the meaning. */}
+      <Image src="/images/vat.png" alt="" width={38} height={48} className="h-12 w-auto shrink-0" />
       <span className="text-start">
         <span className="block text-xs text-ink-muted">{t("vatNumber")}</span>
         <span className="block font-semibold tabular-nums text-ink" dir="ltr">
@@ -84,20 +93,6 @@ export function VatCertificateButton({ vatNumber, certificate }: { vatNumber: st
       className="flex items-center gap-3 rounded-card hover:opacity-80"
     >
       {content}
-    </button>
-  );
-}
-
-export function BackToTop() {
-  const t = useTranslations("shell");
-  return (
-    <button
-      type="button"
-      onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })}
-      className="mx-auto flex items-center gap-2 py-3 text-sm font-medium text-ink-soft hover:text-brand-dark"
-    >
-      <ArrowUp className="size-4" aria-hidden="true" />
-      {t("backToTop")}
     </button>
   );
 }

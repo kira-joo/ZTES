@@ -8,27 +8,26 @@ import type {
   HomeSectionView,
   PageView,
   ProductCardView,
+  ReviewView,
   SettingsView,
-  TestimonialView,
 } from "src/common/types/storefront";
 import { FAQS } from "src/content/faqs";
 import { HOME_SECTIONS, type StaticHomeSection, type StaticMediaItem } from "src/content/home-sections";
 import { PAGES } from "src/content/pages";
 import { STORE_CONFIG } from "src/content/store-config";
-import { TESTIMONIALS } from "src/content/testimonials";
 import { CategoryModel, type CategorySchema } from "src/server/catalog/category.schema";
 import { ProductModel, type ProductSchema } from "src/server/catalog/product.schema";
 import { CouponModel } from "src/server/commerce/coupon.schema";
 import { CacheTag } from "src/server/core/revalidation/cache-tag";
 import { pickSlug } from "src/lib/localized";
 import { cachedRead } from "./cached-read";
-import { getBrands, listProducts, toCards } from "./catalog.reads";
+import { getBrands, getRecentReviews, listProducts, toCards } from "./catalog.reads";
 import { CARD_FIELDS, emptyLocalized } from "./mappers";
 
 const E = emptyLocalized;
 const ACTIVE = { isActive: true, deletedAt: null };
 
-// ─── Store config, FAQ, testimonials ───────────────────────────────────────
+// ─── Store config, FAQ ──────────────────────────────────────────────────────
 // All static app content (src/content/*) — no database, no cache tag needed;
 // it only changes on deploy. See docs/implementation-plan.md's "Scope
 // correction".
@@ -39,10 +38,6 @@ export async function getSettings(): Promise<SettingsView> {
 
 export async function getFaqs(): Promise<FaqView[]> {
   return FAQS;
-}
-
-export async function getTestimonials(): Promise<TestimonialView[]> {
-  return TESTIMONIALS;
 }
 
 export async function getPages(): Promise<PageView[]> {
@@ -163,7 +158,7 @@ async function resolveSection(
   index: number,
   locale: "ar" | "en",
   faqs: FaqView[],
-  testimonials: TestimonialView[],
+  reviews: ReviewView[],
   brands: Awaited<ReturnType<typeof getBrands>>
 ): Promise<HomeSectionView> {
   const base: HomeSectionView = {
@@ -175,7 +170,7 @@ async function resolveSection(
     category: null,
     brands: [],
     faqs: [],
-    testimonials: [],
+    reviews: [],
     videoUrl: "",
     couponCode: "",
     endsAt: null,
@@ -212,7 +207,7 @@ async function resolveSection(
       base.faqs = faqs;
       return base;
     case HomeSectionType.TESTIMONIALS:
-      base.testimonials = testimonials;
+      base.reviews = reviews;
       return base;
     default:
       // SOCIAL_LINKS reads settings.social directly at render time; BANNER and
@@ -222,11 +217,13 @@ async function resolveSection(
 }
 
 /** Every home section with the data it renders resolved live against the catalog. */
+// The key names the cached value's shape: an entry cached under an older shape (here, one with
+// `testimonials` instead of `reviews`) survives a deploy in the data cache and would crash the page.
 export const getHomeSections = cachedRead(
-  "home",
-  [CacheTag.PRODUCTS, CacheTag.CATEGORIES, CacheTag.BRANDS],
+  "home-v2",
+  [CacheTag.PRODUCTS, CacheTag.CATEGORIES, CacheTag.BRANDS, CacheTag.REVIEWS],
   async (locale: "ar" | "en"): Promise<HomeSectionView[]> => {
-    const [brands, faqs, testimonials] = await Promise.all([getBrands(), getFaqs(), getTestimonials()]);
-    return Promise.all(HOME_SECTIONS.map((section, index) => resolveSection(section, index, locale, faqs, testimonials, brands)));
+    const [brands, faqs, reviews] = await Promise.all([getBrands(), getFaqs(), getRecentReviews()]);
+    return Promise.all(HOME_SECTIONS.map((section, index) => resolveSection(section, index, locale, faqs, reviews, brands)));
   }
 );

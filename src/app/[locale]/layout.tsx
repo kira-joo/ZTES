@@ -4,7 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { LOCALE_DIRECTION, type Locale } from "src/common/enums";
-import { FloatingWhatsApp } from "src/features/storefront/shell/floating-whatsapp";
+import { FloatingActions } from "src/features/storefront/shell/floating-actions";
 import { PromoPopup } from "src/features/storefront/shell/promo-popup";
 import { SiteFooter } from "src/features/storefront/shell/site-footer";
 import { SiteHeader } from "src/features/storefront/shell/site-header";
@@ -69,7 +69,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
               {children}
             </main>
             <SiteFooter />
-            <FloatingWhatsApp number={settings.contact.whatsapp} label={t("whatsapp")} />
+            <FloatingActions whatsapp={settings.contact.whatsapp} whatsappLabel={t("whatsapp")} backToTopLabel={t("backToTop")} />
             <PromoPopup popup={settings.popup} locale={locale} closeLabel={tc("close")} dismissLabel={t("popupDismiss")} />
           </StorefrontProviders>
         </NextIntlClientProvider>

@@ -8,6 +8,7 @@ import { SubmitReviewDto } from "src/server/commerce/dto/commerce.dto";
 import { findAccessibleOrder } from "src/server/commerce/order-access";
 import { OrderNumberParamsDto } from "src/server/core/dto/params.dto";
 import { enforceRateLimit, RATE_LIMITS, resolveClientIp } from "src/server/core/rate-limit/rate-limit";
+import { CacheTag } from "src/server/core/revalidation/cache-tag";
 import { createPostRoute } from "src/server/core/route-factories";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,8 @@ export const POST = createPostRoute({
   params: OrderNumberParamsDto,
   body: SubmitReviewDto,
   successStatus: 201,
+  // The new review and the product rating it recomputes, on the next page load.
+  revalidateTags: [CacheTag.REVIEWS, CacheTag.PRODUCTS],
   handler: async ({ params, body, request }) => {
     await enforceRateLimit({ key: `review:${resolveClientIp(request)}`, ...RATE_LIMITS.REVIEW });
     const order = await findAccessibleOrder(params.orderNumber);

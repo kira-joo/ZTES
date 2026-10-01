@@ -50,7 +50,9 @@ content):
   "Brands" item, so create/edit/delete happen only via the reference importer.
   A read-only list endpoint remains for the product form's brand picker.
 - `reviews` — reference-seeded plus buyer-submitted (from a delivered order, the
-  no-accounts stand-in for "verified purchase"). There is no admin
+  no-accounts stand-in for "verified purchase"). Product pages list a product's
+  published reviews; the home reviews carousel shows the newest 50 published
+  reviews across all products (2026-10-01). There is no admin
   review-management screen; a submitted review **publishes immediately**
   (previously it waited for admin moderation, which no longer exists as a
   concept — a moderation queue with no moderator screen is a dead end, not a
@@ -72,7 +74,10 @@ would be a fabricated endorsement. The **static content module structurally
 reproduces every one of these sections** (contact block, legal block,
 testimonials block all render) but with neutral/placeholder values instead of
 copied real-world identity, and testimonials are rewritten as generic,
-non-attributed quotes rather than reusing scraped names. Product/brand data is
+non-attributed quotes rather than reusing scraped names. *(Superseded
+2026-10-01: the separate testimonials list is gone; by the store owner's
+decision the home reviews carousel shows the newest 50 reviews from the
+database as written, reviewer names included.)* Product/brand data is
 unaffected by this — a reseller legitimately carries real manufacturer brand
 names, which is a different situation from claiming another retailer's
 identity as your own.

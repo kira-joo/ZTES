@@ -10,10 +10,11 @@ The plan of record is `docs/implementation-plan.md`.
 - **Admin manages only dynamic commerce data: Products, Categories, Coupons,
   Orders.** Nothing else gets a CRUD screen, an admin API route, or a
   collection that exists only to be admin-editable. Home sections, FAQ,
-  testimonials, static pages, blog posts and store identity/contact/social/
+  static pages and store identity/contact/social/
   delivery/VAT/safe-use text are `src/content/*.ts` — static app content, not
   database rows. `brands` and `reviews` stay in Mongo (seed-populated /
-  buyer-submitted) but have zero admin CRUD surface. See
+  buyer-submitted) but have zero admin CRUD surface; the home reviews carousel
+  is the newest 50 published `reviews` (`getRecentReviews`), not static text. See
   `docs/implementation-plan.md`'s "Scope correction" section before adding any
   new admin screen or collection — if it isn't Products/Categories/Coupons/
   Orders, it almost certainly belongs in `src/content`, not a new model.
@@ -23,6 +24,8 @@ The plan of record is `docs/implementation-plan.md`.
   endorsement. Reproduce the section structurally; use neutral/placeholder
   values instead of the scraped real-world identity. Product/brand names are
   unaffected (a reseller legitimately carries real manufacturer brands).
+  One owner-approved exception (2026-10-01): the home reviews carousel shows
+  the newest database reviews as written, reviewer names included.
 - **Reference parity.** The storefront reproduces orkidastore.com (a Salla store)
   in structure, flows and interactions. Every intentional difference is listed in
   the plan's "Excluded reference features" with its reason. Do not drop a
@@ -60,13 +63,13 @@ The plan of record is `docs/implementation-plan.md`.
 | Path | Holds |
 |---|---|
 | `src/server/{catalog,commerce}` | schemas, DTOs, services for Products/Categories/Brands/Reviews/Coupons/Orders/Customers/Cart |
-| `src/content` | static storefront content: store config, home sections, FAQ, testimonials, pages, blog |
+| `src/content` | static storefront content: store config, home sections, FAQ, pages |
 | `src/server/engines` | pure business rules, each with tests |
 | `src/server/storefront` | read models for Server Components — `content.reads.ts` reads `src/content`, `catalog.reads.ts`/others read the database, both cached the same way |
 | `src/server/core` | toolkit config, db, auth, assets, CRUD helpers, route factories |
 | `src/common/types` | JSON view shapes shared by server and client |
 | `src/common/api/*.endpoints.ts` | browser `Endpoint` contracts — never a root `api/` (Vercel makes each file there a Serverless Function) |
-| `scripts/reference` | Orkida scrape + seed for Products/Categories/Brands/Reviews (snapshot in gitignored `data/reference`) |
+| `scripts/reference` | Orkida scrape + seed for Products/Categories/Brands/Reviews/Coupons (snapshot in gitignored `data/reference`) |
 
 Routes import factories from `src/server/core/route-factories`, never from the
 package directly (responses are normalised there).

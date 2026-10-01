@@ -73,7 +73,7 @@ export async function HomeSections({ sections, settings, locale }: { sections: H
         return (
           <section>
             <SectionHeading title={title || t("brandsTitle")} subtitle={title ? undefined : t("brandsSubtitle")} />
-            <Carousel dir={dir} labels={labels} slideClassName="basis-[30%] sm:basis-[20%] lg:basis-[12.5%]" autoplayMs={3500} showProgress={false}>
+            <Carousel dir={dir} labels={labels} slideClassName="basis-[30%] sm:basis-[20%] lg:basis-[12.5%]" showProgress={false}>
               {section.brands.map((brand) => (
                 <Link key={brand._id} href={`/brands/${pickSlug(brand.slug, locale)}`} className="grid aspect-[3/2] place-items-center rounded-card bg-card p-3 shadow-card" aria-label={L(brand.name)}>
                   {brand.logo?.secureUrl ? (
@@ -183,12 +183,12 @@ export async function HomeSections({ sections, settings, locale }: { sections: H
         );
 
       case HomeSectionType.TESTIMONIALS:
-        if (section.testimonials.length === 0) return null;
+        if (section.reviews.length === 0) return null;
         return (
           <section>
             <SectionHeading title={title || t("testimonialsTitle")} align="start" />
             <Carousel dir={dir} labels={labels} slideClassName="basis-[80%] sm:basis-[45%] lg:basis-[28%]">
-              {section.testimonials.map((item) => (
+              {section.reviews.map((item) => (
                 <figure key={item._id} className="relative flex h-full flex-col items-center gap-3 rounded-card bg-card p-6 text-center shadow-card">
                   <Quote className="absolute start-5 top-5 size-6 text-line" aria-hidden="true" />
                   <span className="grid size-16 place-items-center rounded-full bg-brand-soft text-xl font-bold text-brand-deep">{item.authorName.slice(0, 1)}</span>
@@ -198,7 +198,7 @@ export async function HomeSections({ sections, settings, locale }: { sections: H
                       <Star key={index} className={`size-4 ${index < item.rating ? "fill-star text-star" : "text-line"}`} aria-hidden="true" />
                     ))}
                   </span>
-                  <blockquote className="text-sm text-ink-soft">{L(item.body)}</blockquote>
+                  <blockquote className="text-sm text-ink-soft">{item.body}</blockquote>
                 </figure>
               ))}
             </Carousel>

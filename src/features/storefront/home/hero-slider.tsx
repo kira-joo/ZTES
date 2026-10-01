@@ -2,11 +2,12 @@
 
 import useEmblaCarousel from "embla-carousel-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { HomeMediaItemView } from "src/common/types/storefront";
 import { SmartLink } from "src/components/store/smart-link";
 import { PAGE_CONTENT_SIZES as HERO_SIZES } from "src/components/store/image-sizes";
 import { StoreImage } from "src/components/store/store-image";
+import { useCarouselAutoplay } from "src/components/store/use-carousel-autoplay";
 import { pickLocalized } from "src/lib/localized";
 
 /**
@@ -30,15 +31,12 @@ export function HeroSlider({ items, dir }: { items: HomeMediaItemView[]; dir: "r
     };
   }, [api, onSelect]);
 
-  useEffect(() => {
-    if (!api || items.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(() => api.scrollNext(), 6000);
-    return () => window.clearInterval(id);
-  }, [api, items.length]);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useCarouselAutoplay(api, items.length > 1 ? 6000 : undefined, rootRef);
 
   if (items.length === 0) return null;
   return (
-    <div className="relative overflow-hidden rounded-card">
+    <div ref={rootRef} className="relative overflow-hidden rounded-card">
       <div ref={viewportRef} className="overflow-hidden">
         <div className="flex">
           {items.map((item, index) => (

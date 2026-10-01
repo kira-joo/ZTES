@@ -27,6 +27,7 @@
   "subscribeFailed": "Couldn't subscribe. Check the email address.",
   "vatNumber": "VAT number",
   "vatCertificate": "VAT registration certificate",
+  "shortAddress": "Short address",
   "crNumber": "Commercial registration",
   "paymentMethods": "Payment methods",
   "cashOnDelivery": "Cash on delivery",

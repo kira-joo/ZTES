@@ -27,6 +27,7 @@
   "subscribeFailed": "تعذّر الاشتراك، تأكد من البريد الإلكتروني",
   "vatNumber": "الرقم الضريبي",
   "vatCertificate": "شهادة التسجيل الضريبي",
+  "shortAddress": "العنوان المختصر",
   "crNumber": "السجل التجاري",
   "paymentMethods": "طرق الدفع",
   "cashOnDelivery": "الدفع عند الاستلام",
