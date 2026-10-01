@@ -17,7 +17,10 @@ const nextConfig = {
   },
   // Node-only; imported from src/server/** alone. External so a stray client
   // import fails the build instead of bloating a bundle.
-  serverExternalPackages: ["mongoose", "cloudinary", "sanitize-html"],
+  // Not sanitize-html: it is CommonJS and require()s htmlparser2 12, which is
+  // ESM-only, so loading it external fails with ERR_REQUIRE_ESM on Vercel's
+  // runtime. Bundled, the ESM dependency is resolved at build time.
+  serverExternalPackages: ["mongoose", "cloudinary"],
   // `next dev` otherwise writes into CLAUDE.md on every run.
   agentRules: false,
 };
