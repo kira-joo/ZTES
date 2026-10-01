@@ -1,6 +1,6 @@
 "use client";
 
-import { couponCrudEndpoints, type CouponEntity, type CouponFormValues } from "api/admin-coupons.endpoints";
+import { couponCrudEndpoints, type CouponEntity, type CouponFormValues } from "src/common/api/admin-coupons.endpoints";
 import { CustomForm, FieldType, type FormSection } from "@kira-joo/frontend-toolkit-tailwind/forms";
 import { InfoRow, PageSection, toast } from "@kira-joo/frontend-toolkit-tailwind/primitives";
 import { useQueryClient } from "@tanstack/react-query";

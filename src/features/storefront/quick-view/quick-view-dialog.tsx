@@ -3,7 +3,7 @@
 import { useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import { toast } from "@kira-joo/frontend-toolkit-tailwind";
 import type { DialogContentProps } from "@kira-joo/frontend-toolkit-tailwind/dialog";
-import { productDetailEndpoint } from "api/storefront-content.endpoints";
+import { productDetailEndpoint } from "src/common/api/storefront-content.endpoints";
 import { ArrowUpRight, ShoppingCart } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";

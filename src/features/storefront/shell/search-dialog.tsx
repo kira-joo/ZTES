@@ -3,7 +3,7 @@
 import { useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import type { DialogContentProps } from "@kira-joo/frontend-toolkit-tailwind/dialog";
 import { useDebouncedValue } from "@kira-joo/frontend-toolkit-tailwind";
-import { searchEndpoint } from "api/storefront-content.endpoints";
+import { searchEndpoint } from "src/common/api/storefront-content.endpoints";
 import { Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";

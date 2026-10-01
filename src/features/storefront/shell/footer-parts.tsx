@@ -3,7 +3,7 @@
 import { useRequesterMutation } from "@kira-joo/frontend-toolkit-core";
 import { modalPresentation, useDialog, type DialogContentProps } from "@kira-joo/frontend-toolkit-tailwind/dialog";
 import { toast } from "@kira-joo/frontend-toolkit-tailwind";
-import { newsletterEndpoint } from "api/storefront-content.endpoints";
+import { newsletterEndpoint } from "src/common/api/storefront-content.endpoints";
 import { ArrowUp } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";

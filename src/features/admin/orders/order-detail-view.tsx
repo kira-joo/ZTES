@@ -1,6 +1,6 @@
 "use client";
 
-import { orderDetailEndpoint, orderTransitionEndpoint, type OrderDetail } from "api/admin-orders.endpoints";
+import { orderDetailEndpoint, orderTransitionEndpoint, type OrderDetail } from "src/common/api/admin-orders.endpoints";
 import { useRequesterMutation, useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import { useConfirm, useDialog, modalPresentation } from "@kira-joo/frontend-toolkit-tailwind/dialog";
 import {

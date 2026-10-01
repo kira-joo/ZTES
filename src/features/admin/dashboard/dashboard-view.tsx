@@ -1,6 +1,6 @@
 "use client";
 
-import { dashboardEndpoint } from "api/admin-dashboard.endpoints";
+import { dashboardEndpoint } from "src/common/api/admin-dashboard.endpoints";
 import { useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import { ActionableList, BarChart, ChartCard, KpiCard } from "@kira-joo/frontend-toolkit-tailwind/charts";
 import { AppLink, PageShell, QueryState } from "@kira-joo/frontend-toolkit-tailwind/primitives";

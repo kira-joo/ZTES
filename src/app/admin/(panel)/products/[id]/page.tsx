@@ -1,6 +1,6 @@
 "use client";
 
-import { productCrudEndpoints, type ProductEntity } from "api/admin-products.endpoints";
+import { productCrudEndpoints, type ProductEntity } from "src/common/api/admin-products.endpoints";
 import { useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import { PageSection, PageShell, QueryState } from "@kira-joo/frontend-toolkit-tailwind/primitives";
 import { use, useState } from "react";

@@ -65,7 +65,7 @@ The plan of record is `docs/implementation-plan.md`.
 | `src/server/storefront` | read models for Server Components — `content.reads.ts` reads `src/content`, `catalog.reads.ts`/others read the database, both cached the same way |
 | `src/server/core` | toolkit config, db, auth, assets, CRUD helpers, route factories |
 | `src/common/types` | JSON view shapes shared by server and client |
-| `api/*.endpoints.ts` | browser `Endpoint` contracts |
+| `src/common/api/*.endpoints.ts` | browser `Endpoint` contracts — never a root `api/` (Vercel makes each file there a Serverless Function) |
 | `scripts/reference` | Orkida scrape + seed for Products/Categories/Brands/Reviews (snapshot in gitignored `data/reference`) |
 
 Routes import factories from `src/server/core/route-factories`, never from the

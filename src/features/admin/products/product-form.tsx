@@ -1,8 +1,8 @@
 "use client";
 
-import { brandCrudEndpoints, type BrandEntity } from "api/admin-brands.endpoints";
-import { categoryCrudEndpoints, type CategoryEntity } from "api/admin-categories.endpoints";
-import { productCrudEndpoints, type ProductEntity, type ProductFormValues } from "api/admin-products.endpoints";
+import { brandCrudEndpoints, type BrandEntity } from "src/common/api/admin-brands.endpoints";
+import { categoryCrudEndpoints, type CategoryEntity } from "src/common/api/admin-categories.endpoints";
+import { productCrudEndpoints, type ProductEntity, type ProductFormValues } from "src/common/api/admin-products.endpoints";
 import { CustomForm, FieldType, renderFormField, type FormSection } from "@kira-joo/frontend-toolkit-tailwind/forms";
 import { CustomCheckbox } from "@kira-joo/frontend-toolkit-tailwind/inputs";
 import { CustomSelect } from "@kira-joo/frontend-toolkit-tailwind/select";

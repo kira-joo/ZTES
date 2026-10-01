@@ -1,6 +1,6 @@
 "use client";
 
-import { couponCrudEndpoints } from "api/admin-coupons.endpoints";
+import { couponCrudEndpoints } from "src/common/api/admin-coupons.endpoints";
 import { useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import { PageShell, QueryState } from "@kira-joo/frontend-toolkit-tailwind/primitives";
 import { use } from "react";

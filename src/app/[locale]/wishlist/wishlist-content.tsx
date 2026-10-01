@@ -1,7 +1,7 @@
 "use client";
 
 import { useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
-import { productsByIdsEndpoint } from "api/storefront-content.endpoints";
+import { productsByIdsEndpoint } from "src/common/api/storefront-content.endpoints";
 import { HeartOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ProductCard } from "src/components/store/product-card";

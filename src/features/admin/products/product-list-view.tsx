@@ -1,8 +1,8 @@
 "use client";
 
-import { brandCrudEndpoints, type BrandEntity } from "api/admin-brands.endpoints";
-import { categoryCrudEndpoints, type CategoryEntity } from "api/admin-categories.endpoints";
-import { productCrudEndpoints, productStatusEndpoint, type ProductBrandSummary, type ProductEntity } from "api/admin-products.endpoints";
+import { brandCrudEndpoints, type BrandEntity } from "src/common/api/admin-brands.endpoints";
+import { categoryCrudEndpoints, type CategoryEntity } from "src/common/api/admin-categories.endpoints";
+import { productCrudEndpoints, productStatusEndpoint, type ProductBrandSummary, type ProductEntity } from "src/common/api/admin-products.endpoints";
 import { useRequesterMutation } from "@kira-joo/frontend-toolkit-core";
 import { CustomSwitch } from "@kira-joo/frontend-toolkit-tailwind/inputs";
 import { FeatureFilterType, FeatureTable, type FeatureTableHandle, type TableColumn } from "@kira-joo/frontend-toolkit-tailwind/table";

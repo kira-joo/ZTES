@@ -1,7 +1,7 @@
 "use client";
 
 import { useRequesterMutation } from "@kira-joo/frontend-toolkit-core";
-import { submitReviewEndpoint } from "api/storefront-cart.endpoints";
+import { submitReviewEndpoint } from "src/common/api/storefront-cart.endpoints";
 import { Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";

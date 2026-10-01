@@ -1,6 +1,6 @@
 "use client";
 
-import { categoryCrudEndpoints } from "api/admin-categories.endpoints";
+import { categoryCrudEndpoints } from "src/common/api/admin-categories.endpoints";
 import { useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import { PageShell, QueryState } from "@kira-joo/frontend-toolkit-tailwind/primitives";
 import { use } from "react";

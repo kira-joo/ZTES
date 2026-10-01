@@ -5,7 +5,7 @@ import {
   productImageOrderEndpoint,
   productImageUploadEndpoint,
   type ProductEntity,
-} from "api/admin-products.endpoints";
+} from "src/common/api/admin-products.endpoints";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";

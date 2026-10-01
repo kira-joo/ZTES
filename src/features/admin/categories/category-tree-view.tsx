@@ -1,6 +1,6 @@
 "use client";
 
-import { categoryCrudEndpoints, categoryReorderEndpoint, type CategoryEntity } from "api/admin-categories.endpoints";
+import { categoryCrudEndpoints, categoryReorderEndpoint, type CategoryEntity } from "src/common/api/admin-categories.endpoints";
 import { useRequesterMutation, useRequesterQuery } from "@kira-joo/frontend-toolkit-core";
 import { useConfirm } from "@kira-joo/frontend-toolkit-tailwind/dialog";
 import { EmptyState, PageShell, QueryState, RouteButton, toast } from "@kira-joo/frontend-toolkit-tailwind/primitives";

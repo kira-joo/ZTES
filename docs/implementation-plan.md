@@ -137,7 +137,9 @@ above — ZTES implements it. Every exclusion is listed with its reason in
 - `src/app/api/storefront/**` public routes (`auth: false`, `force-dynamic`).
 - `src/app/api/admin/**` admin routes (`auth: true`).
 - `src/server/**` schemas, DTOs, repositories, pure engines, storefront reads.
-- `api/*.endpoints.ts` the browser-side `Endpoint` contract (fetch adapter only — same origin).
+- `src/common/api/*.endpoints.ts` the browser-side `Endpoint` contract (fetch adapter only — same origin). Not a root
+  `api/`: Vercel turns every file under a top-level `/api` into its own Serverless Function (Hobby caps a
+  deployment at 12), independent of Next.js — the same move nutrition-client/nutrition-staff made.
 
 Differences from the two-repo precedent, and why:
 

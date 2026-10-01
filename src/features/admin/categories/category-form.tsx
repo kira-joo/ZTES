@@ -1,6 +1,6 @@
 "use client";
 
-import { categoryCrudEndpoints, type CategoryEntity, type CategoryFormValues } from "api/admin-categories.endpoints";
+import { categoryCrudEndpoints, type CategoryEntity, type CategoryFormValues } from "src/common/api/admin-categories.endpoints";
 import { CustomForm, FieldType, renderFormField, type FormSection } from "@kira-joo/frontend-toolkit-tailwind/forms";
 import { PageSection, toast } from "@kira-joo/frontend-toolkit-tailwind/primitives";
 import { useQueryClient } from "@tanstack/react-query";

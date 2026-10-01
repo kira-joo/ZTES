@@ -12,7 +12,7 @@ import {
   setGiftEndpoint,
   updateCartItemEndpoint,
   type PlaceOrderBody,
-} from "api/storefront-cart.endpoints";
+} from "src/common/api/storefront-cart.endpoints";
 import { buildRequesterQueryKey } from "@kira-joo/frontend-toolkit-core";
 import { useRef } from "react";
 import type { CartGiftView, CartView } from "src/common/types/cart";

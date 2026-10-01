@@ -1,6 +1,6 @@
 "use client";
 
-import { adminLogoutEndpoint, adminRefreshEndpoint } from "api/admin-auth.endpoints";
+import { adminLogoutEndpoint, adminRefreshEndpoint } from "src/common/api/admin-auth.endpoints";
 import {
   APIConfig,
   AppLinkConfig,

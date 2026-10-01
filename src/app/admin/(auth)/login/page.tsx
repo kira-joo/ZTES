@@ -1,6 +1,6 @@
 "use client";
 
-import { adminLoginEndpoint, adminRefreshEndpoint } from "api/admin-auth.endpoints";
+import { adminLoginEndpoint, adminRefreshEndpoint } from "src/common/api/admin-auth.endpoints";
 import { getDefaultApiClient, toAppError } from "@kira-joo/frontend-toolkit-core";
 import { AlertTriangle, Lock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";

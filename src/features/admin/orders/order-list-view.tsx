@@ -1,6 +1,6 @@
 "use client";
 
-import { orderListEndpoint, type OrderListRow } from "api/admin-orders.endpoints";
+import { orderListEndpoint, type OrderListRow } from "src/common/api/admin-orders.endpoints";
 import { FeatureFilterType, FeatureTable, type TableColumn } from "@kira-joo/frontend-toolkit-tailwind/table";
 import { Badge, PageShell } from "@kira-joo/frontend-toolkit-tailwind/primitives";
 import { AlertTriangle } from "lucide-react";

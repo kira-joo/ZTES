@@ -1,6 +1,6 @@
 "use client";
 
-import { couponCrudEndpoints, type CouponEntity } from "api/admin-coupons.endpoints";
+import { couponCrudEndpoints, type CouponEntity } from "src/common/api/admin-coupons.endpoints";
 import { useRequesterMutation } from "@kira-joo/frontend-toolkit-core";
 import { FeatureFilterType, FeatureTable, type FeatureTableHandle, type TableColumn } from "@kira-joo/frontend-toolkit-tailwind/table";
 import { PageShell, RouteButton, toast } from "@kira-joo/frontend-toolkit-tailwind/primitives";
