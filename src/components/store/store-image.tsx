@@ -4,6 +4,11 @@ import Image from "next/image";
 /**
  * A Cloudinary image with its blur placeholder, or a neutral tile when the
  * record has none yet (e.g. imported before Cloudinary was configured).
+ *
+ * `priority` maps to `loading="eager"` + `fetchPriority="high"`, not Next's
+ * `preload`: Next 16 deprecated `priority`, and its docs advise against
+ * `preload` when several images can be the LCP depending on the viewport —
+ * which is the hero's separate desktop/mobile artwork.
  */
 export function StoreImage({
   image,
@@ -29,7 +34,7 @@ export function StoreImage({
       alt={alt}
       fill
       sizes={sizes}
-      priority={priority}
+      {...(priority ? { loading: "eager" as const, fetchPriority: "high" as const } : {})}
       className={`${fit === "contain" ? "object-contain" : "object-cover"} ${className}`}
       {...(image.placeholderUrl ? { placeholder: "blur" as const, blurDataURL: image.placeholderUrl } : {})}
     />

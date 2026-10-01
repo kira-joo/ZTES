@@ -182,30 +182,6 @@ export async function HomeSections({ sections, settings, locale }: { sections: H
           </section>
         );
 
-      case HomeSectionType.BLOG_RAIL:
-        if (section.posts.length === 0) return null;
-        return (
-          <section>
-            <SectionHeading title={title || t("blogTitle")} subtitle={t("blogSubtitle")} href="/blog" linkLabel={tc("viewAll")} align="start" />
-            <Carousel dir={dir} labels={labels} slideClassName="basis-[85%] sm:basis-[48%] lg:basis-[32%]">
-              {section.posts.map((post) => (
-                <article key={post._id} className="flex h-full flex-col overflow-hidden rounded-card bg-card shadow-card">
-                  <span className="relative block aspect-[16/9] bg-band">
-                    <StoreImage image={post.cover} alt={L(post.title)} sizes="(min-width: 1024px) 32vw, 85vw" fit="cover" />
-                  </span>
-                  <div className="flex flex-1 flex-col gap-2 p-4">
-                    <h3 className="font-bold text-ink">{L(post.title)}</h3>
-                    <p className="line-clamp-3 text-sm text-ink-soft">{L(post.excerpt)}</p>
-                    <Link href={`/blog/${pickSlug(post.slug, locale)}`} className="mt-auto block rounded-card bg-brand py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-dark">
-                      {tc("readMore")}
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </Carousel>
-          </section>
-        );
-
       case HomeSectionType.TESTIMONIALS:
         if (section.testimonials.length === 0) return null;
         return (

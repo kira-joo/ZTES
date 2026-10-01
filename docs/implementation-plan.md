@@ -86,23 +86,32 @@ rendered with fabricated branches.
 Cloudinary is not yet configured, so every imported product/category/brand
 image field was empty. For the initial handoff the storefront needs to look
 visually complete, so `npm run reference:seed -- --demo-images` fills every
-image field with one of 12 real reference-site product photos downloaded once
-into `public/images/demo/` (`scripts/reference/lib/local-demo-images.ts`),
-picked deterministically from the field's source URL so re-seeding never
-shuffles which photo an item shows. Reuse across many products is expected and
-fine.
+image field with one of 11 reference-site product photos copied into
+`public/images/demo/` (`scripts/reference/lib/local-demo-images.ts`), picked
+deterministically from the field's source URL so re-seeding never shuffles
+which photo an item shows. Reuse across many products is expected and fine.
 
 **This is not a second image architecture.** Every value is an ordinary
 `ImageAsset` — the same shape Cloudinary produces — just pointing at a local
 `/public` path; `StoreImage` and every other consumer render it identically
 either way, and Admin replaces any of them later through the existing
-Cloudinary upload flow with no code change. The photos are the reference
-site's own product packaging photography (no logo, no contact/social info, no
-people) — the same category of asset already sanctioned for real catalog
-import, not the identity-bearing content excluded above.
+Cloudinary upload flow with no code change.
 
-Once Cloudinary is configured: `npm run reference:seed -- --overwrite` (no
-`--demo-images`) replaces every local placeholder with a real upload.
+**Most reference product photos carry Orkida's identity.** Orkida stamps a
+semi-transparent "أوركيدا / orkidaagri / orkidastore.com" watermark over most of
+its product photos, and some are marketing graphics with its phone number,
+Instagram handle and card-payment badges — roughly 90% of ~410 images
+screened. The only reliable check is full resolution after histogram
+equalization; thumbnails and white-background contrast tricks miss a watermark
+sitting over coloured packaging (two earlier versions of this pool shipped
+branded images that way, one with Orkida's phone number as the home hero). The
+11 in the pool passed the full-resolution check — never add an image unseen.
+
+**Consequence for the real import:** `npm run reference:seed -- --overwrite`
+with Cloudinary configured would upload the reference site's *own* photos —
+watermarks included — as ZTES product images. Do not run the real image import
+for a public launch; product images should come from the client (or the
+manufacturers) through Admin.
 
 ## Rule of parity
 

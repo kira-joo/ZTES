@@ -122,7 +122,13 @@ export function ProductGallery({ images, alt }: { images: ImageAsset[]; alt: str
     <div className="flex flex-col gap-3">
       <div className="relative aspect-square overflow-hidden rounded-card bg-card shadow-card" {...swipe}>
         <button type="button" onClick={openLightbox} className="absolute inset-0" aria-label={t("zoom")}>
-          <StoreImage image={images[index] ?? null} alt={alt} sizes="(min-width: 1024px) 40vw, 100vw" priority className="p-6" />
+          <StoreImage
+            image={images[index] ?? null}
+            alt={alt}
+            sizes="(min-width: 1440px) 688px, (min-width: 1024px) calc(50vw - 32px), (min-width: 768px) calc(100vw - 32px), calc(100vw - 24px)"
+            priority
+            className="p-6"
+          />
         </button>
         {images.length > 0 ? (
           <span className="absolute bottom-3 end-3 grid size-9 place-items-center rounded-full bg-card/90 text-ink shadow-card">

@@ -17,13 +17,24 @@
 import type { LocalizedString } from "@kira-joo/toolkit-common";
 import { HomeSectionType, ProductRailSource } from "src/common/enums";
 
-export interface StaticMediaItem {
-  kind: "category" | "product";
-  legacyId: string;
-  /** Overrides the live entity's own name when set (the reference's own marketing copy for that tile). */
-  title?: LocalizedString;
-  subtitle?: LocalizedString;
-}
+export type StaticMediaItem =
+  | {
+      kind: "category" | "product";
+      legacyId: string;
+      /** Overrides the live entity's own name when set (the reference's own marketing copy for that tile). */
+      title?: LocalizedString;
+      subtitle?: LocalizedString;
+    }
+  | {
+      /** ZTES's own finished banner artwork, one file per locale (text is baked into the image). */
+      kind: "banner";
+      src: LocalizedString;
+      width: number;
+      height: number;
+      /** Accessible name — the banner's headline, since the image itself carries the text. */
+      title: LocalizedString;
+      href: string;
+    };
 
 export interface StaticHomeSection {
   type: HomeSectionType;
@@ -36,15 +47,28 @@ export interface StaticHomeSection {
   productLegacyIds?: string[];
   limit?: number;
   spotlightProductLegacyId?: string;
-  postLimit?: number;
 }
 
 export const HOME_SECTIONS: StaticHomeSection[] = [
   {
     type: HomeSectionType.HERO_SLIDER,
     items: [
-      { kind: "category", legacyId: "337886132", subtitle: { ar: "ضيف ثقيل.. يتكيف مع كل الظروف", en: "" } },
-      { kind: "category", legacyId: "333824810", subtitle: { ar: "مصدر الحكة.. وناقل الأمراض الخطير", en: "" } },
+      {
+        kind: "banner",
+        src: { ar: "/images/demo/hero-section-1-ar.png", en: "/images/demo/hero-section-1-en.png" },
+        width: 2014,
+        height: 781,
+        title: { ar: "ZTES حلول فعّالة لحماية منزلك من الآفات", en: "Effective pest control for a safer home" },
+        href: "/offers",
+      },
+      {
+        kind: "banner",
+        src: { ar: "/images/demo/hero-section-2-ar.png", en: "/images/demo/hero-section-2-en.png" },
+        width: 2172,
+        height: 724,
+        title: { ar: "بيئة نظيفة لحياة أكثر راحة", en: "Clean spaces for a healthier life" },
+        href: "/offers",
+      },
     ],
   },
   {
@@ -188,6 +212,5 @@ export const HOME_SECTIONS: StaticHomeSection[] = [
   },
   { type: HomeSectionType.SOCIAL_LINKS },
   { type: HomeSectionType.FAQ },
-  { type: HomeSectionType.BLOG_RAIL, postLimit: 8 },
   { type: HomeSectionType.TESTIMONIALS },
 ];

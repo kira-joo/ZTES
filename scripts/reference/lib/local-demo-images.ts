@@ -1,8 +1,7 @@
 /**
- * A small pool of real reference-site product photos, downloaded once into
- * `public/images/demo/` (see `download-demo-images.ts`), used **only** to make
- * the initial client-handoff demo look visually complete while Cloudinary is
- * not yet configured.
+ * A small pool of real reference-site product photos, copied once into
+ * `public/images/demo/`, used **only** to make the initial client-handoff demo
+ * look visually complete while Cloudinary is not yet configured.
  *
  * This is NOT a second image architecture: every value here is an ordinary
  * `ImageAsset` — the exact shape Cloudinary produces — just pointing at a
@@ -29,41 +28,52 @@ interface PoolEntry {
 }
 
 /**
- * Provenance — each file is an unmodified download of the reference site's
- * own product photography (`cdn.salla.sa`), in the same numeric order:
+ * MOST of the reference site's product photos are NOT usable here: Orkida
+ * stamps a semi-transparent "أوركيدا / orkidaagri / orkidastore.com" watermark
+ * centred over the product, and some are full marketing graphics carrying
+ * Orkida's phone number, Instagram handle and card-payment badges. Roughly 90%
+ * of the ~410 images screened were branded.
  *
- * 01 https://cdn.salla.sa/pGZrN/RbOSpED3AnX2kRwECJsg7FuQMMafxiTXUL1J3hBB.png
- * 02 https://cdn.salla.sa/pGZrN/9ee8ca6f-40ed-4b85-9b4c-3b9778fcb93a-1000x1000-KjWkAc7fj4Jx2qPL3J0QAvY0IOXCCF3ztsgnTSYe.png
- * 03 https://cdn.salla.sa/pGZrN/e2b63649-c2b1-4130-969b-ad7504fea309-1000x1000-LLb0aTIX6TT9iInXU4XvrQqqr8uxxLdyIAEIrU4g.png
- * 04 https://cdn.salla.sa/pGZrN/593235ad-30af-43c8-b9f0-6159b49a87dd-1000x1000-a90PgQjqKhDeVKysylbt9KlTpnQFPnierTHFeuW8.png
- * 05 https://cdn.salla.sa/pGZrN/b2f12664-93ce-4836-b890-dfaa6505a87a-1000x925.06938020352-jX9NmkigxkD8E06leHWgOtB2auR4bDdMFl61Ue3A.png
- * 06 https://cdn.salla.sa/pGZrN/noX4bU9guoMYz8JdtkJuiGEwTZj9cQs5oS181R3b.png
- * 07 https://cdn.salla.sa/pGZrN/uMv6p54YlkRWvUmREbRMldHNKYGkTJv1z4L56mgR.png
- * 08 https://cdn.salla.sa/pGZrN/oDZZL5cL9Zeb1faOItVoqjbHV0X31Tqz8oT4w4UT.png
- * 09 https://cdn.salla.sa/pGZrN/ezvbyPPTpjI8icIXXx7AwDBLR4Vd79kpt9VaPkzt.png
- * 10 https://cdn.salla.sa/pGZrN/jN6QoykcOhywJ2qwNb2z3eL1d3rVtAtU6TEuDy0d.png
- * 11 https://cdn.salla.sa/pGZrN/NPjNnmBGUiXxI4XNGNf3w3YaTWZqplOxxnrm9Ktp.png
- * 12 https://cdn.salla.sa/pGZrN/8662c96e-dbcd-4813-8fcf-5193c3daec7d-1000x1000-aBPP6MHi9r3HvVoiTjz631KZZBb62z0a207JqTv3.png
+ * Two earlier versions of this pool shipped branded images. The first (12
+ * images, all branded, the hero carrying Orkida's phone number) was picked
+ * without being looked at. The second passed a thumbnail check that only
+ * exposes gray-on-white marks — over coloured packaging, and at thumbnail
+ * size, the watermark is invisible; it was obvious at hero size.
  *
- * Ordinary product packaging photography — not Orkida's business identity
- * (no logo, no contact/social info, no people) — the same category of asset
- * already sanctioned for real catalog import. See docs/implementation-plan.md's
- * "Scope correction" for why contact/social/legal/testimonial content is
- * treated differently from product/catalog imagery.
+ * The only reliable check: look at the image at FULL resolution after
+ * histogram equalization (PIL `ImageOps.equalize`), which makes the overlay
+ * stand out wherever it sits. Every image below passed that. Any replacement
+ * must pass it too — never add an image unseen, and never judge from a thumbnail.
+ *
+ * Provenance, in file order (03 and 08 were removed after failing the
+ * full-resolution check; their names are deliberately not reused):
+ * 01 Brigand D bait        https://cdn.salla.sa/pGZrN/GL5h5BS8zmgaTgLj9F7HtFQGK5gCQQJGHeboWIj3.png
+ * 02 Dapkiol mix           https://cdn.salla.sa/pGZrN/37VeGKUJDKdSXZXdTRxNryBNnlkNqxqrgoY1sgqY.jpg
+ * 04 Advion WDG pack       https://cdn.salla.sa/pGZrN/OVvFeLTtfIaa4DISrCbLLSOfaRyvvHEuhUKrSWjt.jpg
+ * 05 Imidasect gel         https://cdn.salla.sa/pGZrN/G63qRChi5SDaCPtICTe0FYQBGX5sNVnNslVJhnmD.png
+ * 06 Outdoor fly trap      https://cdn.salla.sa/pGZrN/qzRxmeSPftHz0dt2aNpbkF2XIR8HAwwM9RuLcSJg.jpg
+ * 07 Snap rat trap         https://cdn.salla.sa/pGZrN/iuHGzQT7Y4gTEZHfBwIBQEYKIo6Deqa9uI41TNC7.jpg
+ * 09 Ecospray hand sprayer https://cdn.salla.sa/pGZrN/db5b5e85-b429-41a7-9dd6-ba417c9d022b-1000x1000-ts0jc0QBFHHYU8QLpmlBLWXsy9cCaP0ephXnE3yz.jpg
+ * 10 Garden 10 sprayer     https://cdn.salla.sa/pGZrN/XKYybL2csbyE90jvJuyknqtZcwc84dVn4DAzrVMc.jpg
+ * 11 Garden trowel        https://cdn.salla.sa/pGZrN/TRVtjlemN7qSJiwQEomQDkw9MMfme2BKZQh6DFX3.jpg
+ * 12 Hedge shears         https://cdn.salla.sa/pGZrN/a6452108-5aa9-4b48-acb0-63397e7adb26-1000x666-kwXd0r4h3iF1PM4gom1C3hyWcv101RPBMexLghjD.jpg
+ * 13 Potted grass         https://cdn.salla.sa/pGZrN/579f71d3-273b-4dcb-a378-212420e9761f-1000x1000-uwDKhK7oEYJfFZUfvYqCNjdQoIAjO6zt4wdyvvNw.jpg
+ *
+ * File names are new to each version, so no optimizer, browser or CDN cache
+ * can serve a branded predecessor's pixels under a familiar URL.
  */
 const POOL: readonly PoolEntry[] = [
-  { file: "sample-01.png", format: "png", width: 1000, height: 925, bytes: 247532 },
-  { file: "sample-02.png", format: "png", width: 1000, height: 1000, bytes: 208727 },
-  { file: "sample-03.png", format: "png", width: 1000, height: 1000, bytes: 328306 },
-  { file: "sample-04.png", format: "png", width: 1000, height: 1000, bytes: 466105 },
-  { file: "sample-05.png", format: "png", width: 1000, height: 925, bytes: 105940 },
-  { file: "sample-06.png", format: "png", width: 1000, height: 925, bytes: 119048 },
-  { file: "sample-07.png", format: "png", width: 1000, height: 925, bytes: 292794 },
-  { file: "sample-08.png", format: "png", width: 1000, height: 1000, bytes: 821340 },
-  { file: "sample-09.png", format: "png", width: 1000, height: 1000, bytes: 523594 },
-  { file: "sample-10.png", format: "png", width: 1000, height: 1000, bytes: 518072 },
-  { file: "sample-11.png", format: "png", width: 999, height: 672, bytes: 381464 },
-  { file: "sample-12.png", format: "png", width: 1000, height: 1000, bytes: 205294 },
+  { file: "demo-01.png", format: "png", width: 1000, height: 1000, bytes: 446195 },
+  { file: "demo-02.jpg", format: "jpg", width: 1000, height: 666, bytes: 43943 },
+  { file: "demo-04.jpg", format: "jpg", width: 1000, height: 666, bytes: 93495 },
+  { file: "demo-05.png", format: "png", width: 1000, height: 666, bytes: 132529 },
+  { file: "demo-06.jpg", format: "jpg", width: 1000, height: 666, bytes: 57886 },
+  { file: "demo-07.jpg", format: "jpg", width: 1000, height: 666, bytes: 56859 },
+  { file: "demo-09.jpg", format: "jpg", width: 1000, height: 1000, bytes: 34966 },
+  { file: "demo-10.jpg", format: "jpg", width: 1000, height: 666, bytes: 20534 },
+  { file: "demo-11.jpg", format: "jpg", width: 1000, height: 666, bytes: 48645 },
+  { file: "demo-12.jpg", format: "jpg", width: 1000, height: 666, bytes: 14577 },
+  { file: "demo-13.jpg", format: "jpg", width: 1000, height: 1000, bytes: 42098 },
 ];
 
 /** Stable, non-cryptographic string hash — just needs to spread keys evenly across the pool. */
@@ -74,9 +84,11 @@ function hashKey(key: string): number {
 }
 
 /**
- * Deterministic by `key` (pass the real reference image's source URL, or the
- * owning entity's slug) so re-seeding the same data never shuffles which demo
- * photo an item shows.
+ * Deterministic by `key`, so re-seeding never shuffles which demo photo an
+ * item shows. Pass something unique per item: the source URL works for
+ * products (each has its own photos), but every reference category shares ONE
+ * source image (the store logo), so categories must be keyed by their own id —
+ * keyed by URL they would all collapse onto a single photo.
  */
 export function pickLocalDemoImage(key: string): ImageAsset {
   const entry = POOL[hashKey(key) % POOL.length]!;

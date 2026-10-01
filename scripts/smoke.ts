@@ -40,6 +40,8 @@ async function request(jar: Jar, method: string, path: string, body?: unknown, h
   } catch {
     /* not JSON */
   }
+  // A smoke check reads arbitrary nested response fields; typing each one would only add casts.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return { status: response.status, json: json as Record<string, any> };
 }
 

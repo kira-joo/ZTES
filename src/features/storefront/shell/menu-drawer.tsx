@@ -50,7 +50,6 @@ export function MenuDrawer({ data, onNavigate, onLanguage }: { data: MenuData; o
   const root: Level = {
     title: t("mainMenu"),
     items: [
-      { key: "blog", label: t("blog"), href: "/blog" },
       ...data.categories.filter((node) => node.showInMenu).map(toItem),
       { key: "brands", label: t("brands"), href: "/brands" },
       { key: "offers", label: t("offers"), href: "/offers" },

@@ -198,7 +198,6 @@ export interface HomeSectionView {
   brands: BrandView[];
   faqs: FaqView[];
   testimonials: TestimonialView[];
-  posts: PostCardView[];
   videoUrl: string;
   couponCode: string;
   endsAt: string | null;
@@ -226,20 +225,6 @@ export interface PageView {
   showInFooter: boolean;
   seo: SeoView;
   updatedAt: string;
-}
-
-export interface PostCardView {
-  _id: string;
-  title: LocalizedString;
-  slug: LocalizedSlug;
-  excerpt: LocalizedString;
-  cover: ImageAsset | null;
-  publishedAt: string;
-}
-
-export interface PostView extends PostCardView {
-  body: LocalizedString;
-  seo: SeoView;
 }
 
 export interface SearchResultView {

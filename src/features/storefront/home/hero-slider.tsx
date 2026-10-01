@@ -1,11 +1,13 @@
 "use client";
 
 import useEmblaCarousel from "embla-carousel-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import type { HomeMediaItemView } from "src/common/types/storefront";
 import { SmartLink } from "src/components/store/smart-link";
+import { PAGE_CONTENT_SIZES as HERO_SIZES } from "src/components/store/image-sizes";
 import { StoreImage } from "src/components/store/store-image";
+import { pickLocalized } from "src/lib/localized";
 
 /**
  * Full-width hero slides (separate mobile artwork when provided), autoplay,
@@ -14,6 +16,7 @@ import { StoreImage } from "src/components/store/store-image";
  */
 export function HeroSlider({ items, dir }: { items: HomeMediaItemView[]; dir: "rtl" | "ltr" }) {
   const t = useTranslations("home");
+  const locale = useLocale();
   const slideLabel = (index: number) => t("slide", { index });
   const [viewportRef, api] = useEmblaCarousel({ direction: dir, loop: items.length > 1 });
   const [selected, setSelected] = useState(0);
@@ -41,11 +44,14 @@ export function HeroSlider({ items, dir }: { items: HomeMediaItemView[]; dir: "r
           {items.map((item, index) => (
             <div key={item._id} className="min-w-0 shrink-0 grow-0 basis-full">
               <SmartLink href={item.href} className="block">
-                <span className="relative hidden aspect-[1420/548] w-full md:block">
-                  <StoreImage image={item.image} alt={item.title.ar || slideLabel(index + 1)} sizes="100vw" priority={index === 0} fit="cover" />
+                {/* The banner artwork's own ratio at every width: the headline is baked into the
+                    image, so a narrower mobile frame would crop it. A wider slide anchors left,
+                    where its text sits, and loses only photo on the right. */}
+                <span className="relative hidden aspect-[2014/781] w-full md:block">
+                  <StoreImage image={item.image} alt={pickLocalized(item.title, locale) || slideLabel(index + 1)} sizes={HERO_SIZES} priority={index === 0} fit="cover" className="object-left" />
                 </span>
-                <span className="relative block aspect-[380/166] w-full md:hidden">
-                  <StoreImage image={item.mobileImage ?? item.image} alt={item.title.ar || slideLabel(index + 1)} sizes="100vw" priority={index === 0} fit="cover" />
+                <span className="relative block aspect-[2014/781] w-full md:hidden">
+                  <StoreImage image={item.mobileImage ?? item.image} alt={pickLocalized(item.title, locale) || slideLabel(index + 1)} sizes={HERO_SIZES} priority={index === 0} fit="cover" className="object-left" />
                 </span>
               </SmartLink>
             </div>
@@ -53,7 +59,8 @@ export function HeroSlider({ items, dir }: { items: HomeMediaItemView[]; dir: "r
         </div>
       </div>
       {items.length > 1 ? (
-        <div className="absolute bottom-4 start-6 flex gap-1.5">
+        // Centred: the banners bake a CTA into a bottom corner (either side), and the centre stays clear.
+        <div className="absolute inset-x-0 bottom-2 flex justify-center gap-1.5 md:bottom-4">
           {items.map((item, index) => (
             <button
               key={item._id}

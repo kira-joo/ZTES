@@ -24,7 +24,7 @@
  *   re-run never uploads twice.
  * - `--demo-images` is the temporary initial-handoff mode (see
  *   docs/implementation-plan.md): every image field gets a real `ImageAsset`
- *   pointing at one of the 12 local photos in `public/images/demo/` instead of
+ *   pointing at one of the 11 local photos in `public/images/demo/` instead of
  *   staying empty, deterministically by source URL (stable across re-seeds).
  *   It is not a second image architecture — the same field, same shape, same
  *   `StoreImage` rendering path Cloudinary uses. Admin replaces it with a real
@@ -180,9 +180,10 @@ async function main() {
     mapFile: path.join(DATA_DIR, "image-map.json"),
     onWarning: (message) => warnings.push(message),
   });
-  const image = (source: ScrapedImage | null | undefined, folder: string): Promise<ImageAsset | null> => {
+  /** `demoKey` overrides the demo-photo pick key where the source URL is not unique per item. */
+  const image = (source: ScrapedImage | null | undefined, folder: string, demoKey?: string): Promise<ImageAsset | null> => {
     if (!source?.sourceUrl) return Promise.resolve(null);
-    if (DEMO_IMAGES) return Promise.resolve(pickLocalDemoImage(source.sourceUrl));
+    if (DEMO_IMAGES) return Promise.resolve(pickLocalDemoImage(demoKey ?? source.sourceUrl));
     return images.import(source.sourceUrl, folder);
   };
 
@@ -213,9 +214,9 @@ async function main() {
       slug: slugPair(category.slug, category.name, category.sallaId, categorySlugs),
       description: { ar: "", en: "" },
       parent,
-      icon: await image(category.icon, "ztes/categories"),
-      image: await image(category.image, "ztes/categories"),
-      banner: await image(category.banner, "ztes/categories"),
+      icon: await image(category.icon, "ztes/categories", `category:${category.sallaId}:icon`),
+      image: await image(category.image, "ztes/categories", `category:${category.sallaId}:image`),
+      banner: await image(category.banner, "ztes/categories", `category:${category.sallaId}:banner`),
       sortOrder: category.sortOrder,
       isActive: true,
       showInMenu: true,

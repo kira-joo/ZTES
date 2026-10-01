@@ -1,4 +1,5 @@
 import "server-only";
+import { AssetProviderType } from "@kira-joo/toolkit-common";
 import { HomeSectionType, ProductRailSource, ProductSort } from "src/common/enums";
 import type {
   CouponPublicView,
@@ -6,8 +7,6 @@ import type {
   HomeMediaItemView,
   HomeSectionView,
   PageView,
-  PostCardView,
-  PostView,
   ProductCardView,
   SettingsView,
   TestimonialView,
@@ -15,7 +14,6 @@ import type {
 import { FAQS } from "src/content/faqs";
 import { HOME_SECTIONS, type StaticHomeSection, type StaticMediaItem } from "src/content/home-sections";
 import { PAGES } from "src/content/pages";
-import { POSTS } from "src/content/posts";
 import { STORE_CONFIG } from "src/content/store-config";
 import { TESTIMONIALS } from "src/content/testimonials";
 import { CategoryModel, type CategorySchema } from "src/server/catalog/category.schema";
@@ -53,23 +51,6 @@ export async function getPages(): Promise<PageView[]> {
 
 export async function getPageBySlug(locale: "ar" | "en", slug: string): Promise<PageView | null> {
   return PAGES.find((page) => page.slug[locale] === slug) ?? null;
-}
-
-function stripPostBody(post: PostView): PostCardView {
-  return { _id: post._id, title: post.title, slug: post.slug, excerpt: post.excerpt, cover: post.cover, publishedAt: post.publishedAt };
-}
-
-export async function getPosts(locale: "ar" | "en", page: number = 1, limit: number = 12): Promise<{ items: PostCardView[]; total: number }> {
-  const eligible = POSTS.filter((post) => post.title[locale] && post.body[locale]).sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
-  const start = (page - 1) * limit;
-  return { items: eligible.slice(start, start + limit).map(stripPostBody), total: eligible.length };
-}
-
-export async function getPostBySlug(locale: "ar" | "en", slug: string): Promise<PostView | null> {
-  const post = POSTS.find((item) => item.slug[locale] === slug && item.title[locale] && item.body[locale]);
-  return post ?? null;
 }
 
 /** The search modal's zero-query state: top active categories and top-selling products, derived live. */
@@ -133,6 +114,26 @@ async function productCardsByLegacyIds(legacyIds: string[]): Promise<ProductCard
 }
 
 async function resolveMediaItem(item: StaticMediaItem, locale: "ar" | "en"): Promise<HomeMediaItemView | null> {
+  if (item.kind === "banner") {
+    const src = item.src[locale] || item.src.ar;
+    return {
+      _id: `banner-${src}`,
+      // A static /public file in the same `ImageAsset` shape `StoreImage` renders; not an upload.
+      image: {
+        provider: AssetProviderType.CLOUDINARY,
+        publicId: `static${src}`,
+        secureUrl: src,
+        format: src.split(".").pop() ?? "png",
+        width: item.width,
+        height: item.height,
+        bytes: 0,
+      },
+      mobileImage: null,
+      title: item.title,
+      subtitle: E(),
+      href: item.href,
+    };
+  }
   if (item.kind === "category") {
     const category = await categoryByLegacyId(item.legacyId);
     if (!category) return null;
@@ -175,7 +176,6 @@ async function resolveSection(
     brands: [],
     faqs: [],
     testimonials: [],
-    posts: [],
     videoUrl: "",
     couponCode: "",
     endsAt: null,
@@ -213,9 +213,6 @@ async function resolveSection(
       return base;
     case HomeSectionType.TESTIMONIALS:
       base.testimonials = testimonials;
-      return base;
-    case HomeSectionType.BLOG_RAIL:
-      base.posts = (await getPosts(locale, 1, section.postLimit ?? 8)).items;
       return base;
     default:
       // SOCIAL_LINKS reads settings.social directly at render time; BANNER and

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Breadcrumbs } from "src/components/store/breadcrumbs";
+import { PAGE_CONTENT_SIZES } from "src/components/store/image-sizes";
 import { StoreImage } from "src/components/store/store-image";
 import { parseListingParams } from "src/features/storefront/listing/listing-params";
 import { ProductListing } from "src/features/storefront/listing/product-listing";
@@ -69,7 +70,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <Breadcrumbs items={crumbs} locale={locale} />
       {category.banner?.secureUrl ? (
         <div className="relative mt-4 aspect-[1420/300] overflow-hidden rounded-card">
-          <StoreImage image={category.banner} alt={name} sizes="100vw" fit="cover" priority />
+          <StoreImage image={category.banner} alt={name} sizes={PAGE_CONTENT_SIZES} fit="cover" priority />
         </div>
       ) : null}
       <h1 className="mb-5 mt-4 text-2xl font-bold text-ink md:text-3xl">{name}</h1>

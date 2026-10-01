@@ -26,7 +26,6 @@ export async function SiteFooter() {
     })),
     { label: t("wishlist"), href: "/wishlist" },
     { label: t("offers"), href: "/offers" },
-    { label: t("blog"), href: "/blog" },
   ];
 
   return (
